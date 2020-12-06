@@ -883,4 +883,4 @@ def return_stack_graph_outputs(click, radio):
     return stack_fig
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8080)
+    app.run_server(host='0.0.0.0', port=8050, debug=True)
