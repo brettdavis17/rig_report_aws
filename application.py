@@ -2,6 +2,7 @@ import json
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import plotly.graph_objects as go
 import dash_table
@@ -11,7 +12,7 @@ from dateutil.relativedelta import relativedelta
 import functions
 
 external_stylesheets = [
-    'https://codepen.io/chriddyp/pen/bWLwgP.css'
+    dbc.themes.CYBORG
 ]
 
 app = dash.Dash(
@@ -131,7 +132,39 @@ app.layout = html.Div([
                 html.Div([
                     dash_table.DataTable(
                         id='state-table',
-                        style_cell={
+                        style_data_conditional=[
+                            {
+                                'if': {'row_index': 'even'},
+                                'textAlign': 'left',
+                                'backgroundColor': '#686B6D',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {'row_index': 'odd'},
+                                'textAlign': 'left',
+                                'backgroundColor': '#2C2D2E',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {
+                                    'filter_query': '{+/-} > 0',
+                                    'column_id': '+/-'
+                                },
+                                'backgroundColor': 'green',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {
+                                    'filter_query': '{+/-} < 0',
+                                    'column_id': '+/-'
+                                },
+                                'backgroundColor': 'red',
+                                'color': 'white'
+                            }
+                        ],
+                        style_header={
+                            'backgroundColor': 'black',
+                            'color': 'white',
                             'textAlign': 'left'
                         }
                         # fixed_rows={
@@ -144,7 +177,39 @@ app.layout = html.Div([
                 html.Div([
                     dash_table.DataTable(
                         id='basin-table',
-                        style_cell={
+                        style_data_conditional=[
+                            {
+                                'if': {'row_index': 'even'},
+                                'textAlign': 'left',
+                                'backgroundColor': '#686B6D',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {'row_index': 'odd'},
+                                'textAlign': 'left',
+                                'backgroundColor': '#2C2D2E',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {
+                                    'filter_query': '{+/-} > 0',
+                                    'column_id': '+/-'
+                                },
+                                'backgroundColor': 'green',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {
+                                    'filter_query': '{+/-} < 0',
+                                    'column_id': '+/-'
+                                },
+                                'backgroundColor': 'red',
+                                'color': 'white'
+                            }
+                        ],
+                        style_header={
+                            'backgroundColor': 'black',
+                            'color': 'white',
                             'textAlign': 'left'
                         }
                         # fixed_rows={
@@ -157,7 +222,39 @@ app.layout = html.Div([
                 html.Div([
                     dash_table.DataTable(
                         id='county-table',
-                        style_cell={
+                        style_data_conditional=[
+                            {
+                                'if': {'row_index': 'even'},
+                                'textAlign': 'left',
+                                'backgroundColor': '#686B6D',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {'row_index': 'odd'},
+                                'textAlign': 'left',
+                                'backgroundColor': '#2C2D2E',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {
+                                    'filter_query': '{+/-} > 0',
+                                    'column_id': '+/-'
+                                },
+                                'backgroundColor': 'green',
+                                'color': 'white'
+                            },
+                            {
+                                'if': {
+                                    'filter_query': '{+/-} < 0',
+                                    'column_id': '+/-'
+                                },
+                                'backgroundColor': 'red',
+                                'color': 'white'
+                            }
+                        ],
+                        style_header={
+                            'backgroundColor': 'black',
+                            'color': 'white',
                             'textAlign': 'left'
                         }
                         # fixed_rows={
@@ -188,7 +285,7 @@ app.layout = html.Div([
                     )
                 ], className='graph_container twelve columns'
                 ),
-            ], className='twelve columns'
+            ], className='twelve columns bg-grey'
             ),
             html.Div([
                 html.Div([
@@ -249,7 +346,6 @@ app.layout = html.Div([
                         options=[
                             {'label': 'States', 'value': 'state'},
                             {'label': 'Basins', 'value': 'basin'},
-                            {'label': 'Counties', 'value': 'county'},
                             {'label': 'Drill For', 'value': 'drill_for'},
                             {'label': 'Trajectory', 'value': 'trajectory'},
                             {'label': 'Well Depth', 'value': 'well_depth'}
@@ -440,11 +536,12 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
                 mode='number+delta',
                 value=indicator_df['rig_count'].sum(),
                 delta={'reference':delta_df['rig_count'].sum()},
-                number={
-                    'font': {
-                        'size': 48
-                    }
-                }
+                # number={
+                #     'font': {
+                #         'size': 48
+                #     }
+                # }
+                # gauge={'axis': {'range': [None, 2000]}}
             ),
             go.Scatter(
                 name='1-YEAR TREND',
@@ -455,8 +552,8 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
         'layout': go.Layout(
             # title='COGS',
             # height=100,
-            paper_bgcolor='white',
-            title_text='RIG COUNT AND TRENDS<br>FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4]
+            title_text='RIG COUNT AND TRENDS<br>FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            template="plotly_dark"
         )
     }
 
@@ -480,11 +577,11 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
                 mode='number+delta',
                 value=indicator_df['county'].nunique(),
                 delta={'reference': delta_df['county'].nunique()},
-                number={
-                    'font': {
-                        'size': 48
-                    }
-                }
+                # number={
+                #     'font': {
+                #         'size': 48
+                #     }
+                # }
             ),
             go.Scatter(
                 name='1-YEAR TREND',
@@ -495,21 +592,36 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
         'layout': go.Layout(
             # title='COGS',
             # height=100,
-            paper_bgcolor='white',
-            title_text='COUNTY COUNT AND TRENDS<br>FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4]
+            # paper_bgcolor='white',
+            title_text='COUNTY COUNT AND TRENDS<br>FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            template="plotly_dark"
         )
     }
 
     state_raw_table_df = indicator_df[['state', 'rig_count']].groupby(['state']).sum().reset_index()
+    state_raw_table_lw_df = delta_df[['state', 'rig_count']].groupby(['state']).sum().reset_index()
 
     state_table_df = state_raw_table_df.sort_values(by=['rig_count'], ascending=False)
 
     state_table_df['rank'] = state_table_df['rig_count'].rank(method='min', ascending=False)
 
+    state_list = state_table_df['state'].tolist()
+    state_table_rig_count_list = state_table_df['rig_count'].tolist()
+
+    state_plus_minus_list = [
+        (state_table_df[state_table_df['state'] == x]['rig_count'].tolist()[0]) - \
+        (state_raw_table_lw_df[state_raw_table_lw_df['state'] == x]['rig_count'].tolist()[0] \
+             if state_raw_table_lw_df[state_raw_table_lw_df['state'] == x]['rig_count'].tolist() != [] \
+             else 0)
+        for x in state_list
+    ]
+
+
     state_final_table_df = pd.DataFrame({
         'RANK': [int(x) for x in state_table_df['rank'].tolist()],
-        'STATE': state_table_df['state'].tolist(),
-        'RIGS': state_table_df['rig_count'].tolist()
+        'STATE': state_list,
+        'RIGS': state_table_rig_count_list,
+        '+/-': state_plus_minus_list
     })
 
     state_table_columns = [{
@@ -543,15 +655,27 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
     }
 
     basin_raw_table_df = indicator_df[['basin', 'rig_count']].groupby(['basin']).sum().reset_index()
+    basin_raw_table_lw_df = delta_df[['basin', 'rig_count']].groupby(['basin']).sum().reset_index()
 
     basin_table_df = basin_raw_table_df.sort_values(by=['rig_count'], ascending=False)
 
     basin_table_df['rank'] = basin_table_df['rig_count'].rank(method='min', ascending=False)
+    basin_list = basin_table_df['basin'].tolist()
+    basin_table_rig_count_list = basin_table_df['rig_count'].tolist()
+
+    basin_plus_minus_list = [
+        (basin_table_df[basin_table_df['basin'] == x]['rig_count'].tolist()[0]) - \
+            (basin_raw_table_lw_df[basin_raw_table_lw_df['basin'] == x]['rig_count'].tolist()[0] \
+                if basin_raw_table_lw_df[basin_raw_table_lw_df['basin'] == x]['rig_count'].tolist() != [] \
+                    else 0)
+                for x in basin_list
+    ]
 
     basin_final_table_df = pd.DataFrame({
         'RANK': [int(x) for x in basin_table_df['rank'].tolist()],
-        'BASIN': basin_table_df['basin'].tolist(),
-        'RIGS': basin_table_df['rig_count'].tolist()
+        'BASIN': basin_list,
+        'RIGS': basin_table_rig_count_list,
+        '+/-': basin_plus_minus_list
     })
 
     basin_table_columns = [{
@@ -585,15 +709,28 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
     # }
 
     county_raw_table_df = indicator_df[['county', 'rig_count']].groupby(['county']).sum().reset_index()
+    county_raw_table_lw_df = delta_df[['county', 'rig_count']].groupby(['county']).sum().reset_index()
 
     county_table_df = county_raw_table_df.sort_values(by=['rig_count'], ascending=False)
 
     county_table_df['rank'] = county_table_df['rig_count'].rank(method='min', ascending=False)
 
+    county_list = county_table_df['county'].tolist()
+    county_table_rig_count_list = county_table_df['rig_count'].tolist()
+
+    county_plus_minus_list = [
+        (county_table_df[county_table_df['county'] == x]['rig_count'].tolist()[0]) - \
+        (county_raw_table_lw_df[county_raw_table_lw_df['county'] == x]['rig_count'].tolist()[0] \
+             if county_raw_table_lw_df[county_raw_table_lw_df['county'] == x]['rig_count'].tolist() != [] \
+             else 0)
+        for x in county_list
+    ]
+
     county_final_table_df = pd.DataFrame({
         'RANK': [int(x) for x in county_table_df['rank'].tolist()],
-        'COUNTY': county_table_df['county'].tolist(),
-        'RIGS': county_table_df['rig_count'].tolist()
+        'COUNTY': county_list,
+        'RIGS': county_table_rig_count_list,
+        '+/-': county_plus_minus_list
     })
 
     county_table_columns = [{
@@ -634,6 +771,7 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
     map_fig = {
         'data': [
             go.Choropleth(
+                name='Counties',
                 geojson=counties,
                 locations=map_df['fips'],
                 z=map_df['rig_count'],
@@ -652,7 +790,8 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
                 't': 0,
                 'l': 0,
                 'b': 0
-            }
+            },
+            template="plotly_dark"
         )
     }
 
@@ -666,7 +805,8 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
             )
         ],
         'layout': go.Layout(
-            title_text='SHARE OF DRILL-FOR<br>FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4]
+            title_text='SHARE OF DRILL-FOR<br>' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            template="plotly_dark"
         )
     }
 
@@ -717,7 +857,8 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
                 'y0': 0,
                 'x1': date,
                 'y1': max_share
-            }]
+            }],
+            template="plotly_dark"
         )
     }
 
@@ -731,7 +872,8 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
             )
         ],
         'layout': go.Layout(
-            title_text='SHARE OF WELL-DEPTH<br>' + date[5:7] + '-' + date[8:] + '-' + date[:4]
+            title_text='SHARE OF WELL-DEPTH<br>' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            template="plotly_dark"
         )
     }
 
@@ -774,7 +916,8 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
                 'y0': 0,
                 'x1': date,
                 'y1': max_share
-            }]
+            }],
+            template="plotly_dark"
         )
     }
 
@@ -788,7 +931,8 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
             )
         ],
         'layout': go.Layout(
-            title_text='SHARE OF RIG TRAJECTORIES<br>FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4]
+            title_text='SHARE OF RIG TRAJECTORIES<br>FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            template="plotly_dark"
         )
     }
 
@@ -832,7 +976,8 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
                 'y0': 0,
                 'x1': date,
                 'y1': max_share
-            }]
+            }],
+            template="plotly_dark"
         )
     }
 
@@ -856,10 +1001,14 @@ def return_outputs(click, date, states, basins, drill_for, locations, trajectori
         State(
             'stack-radio',
             'value'
+        ),
+        State(
+            'date-dropdown',
+            'value'
         )
     ]
 )
-def return_stack_graph_outputs(click, radio):
+def return_stack_graph_outputs(click, radio, date):
 
     df = master_df[['date', radio, 'rig_count']]
 
@@ -875,7 +1024,17 @@ def return_stack_graph_outputs(click, radio):
     ]
 
     layout = {
-        'title': 'RIG COUNT HISTORY STACKED BY ' + radio.upper()
+        'title': 'RIG COUNT HISTORY STACKED BY ' + radio.upper(),
+        'template': "plotly_dark",
+        'shapes': [{
+            'type': 'line',
+            'xref': 'x',
+            'yref': 'y',
+            'x0': date,
+            'y0': 0,
+            'x1': date,
+            'y1': 2000
+        }]
     }
 
     stack_fig = go.Figure(data=data, layout=layout)

@@ -2,8 +2,14 @@
   text-align: center;
 }
 
-body {
+/*body {
   background-color: '#F2F4F4';
+}*/
+body {
+  background-color: #1E1E1E;
+  color: #d8d8d8;
+  margin: 0;
+  padding: 0;
 }
 
 /* Table of contents
