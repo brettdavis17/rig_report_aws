@@ -392,6 +392,8 @@ def get_share_trajectory_df():
 
     df = pd.read_sql(sql, conn)
 
+    conn.close()
+
     return df
 
 def get_weekly_total_df():
@@ -404,7 +406,11 @@ def get_weekly_total_df():
 
     df = pd.read_sql(sql, conn)
 
+    conn.close()
+
     return df
+
+
 
 # def get_rig_indicator_fig(date):
 #
