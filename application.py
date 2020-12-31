@@ -1317,7 +1317,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -1366,7 +1370,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -1414,7 +1422,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -1800,7 +1812,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -1848,7 +1864,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -1896,7 +1916,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -2279,7 +2303,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -2328,7 +2356,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -2377,7 +2409,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -2760,7 +2796,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -2809,7 +2849,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -2858,7 +2902,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -3241,7 +3289,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -3290,7 +3342,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -3339,7 +3395,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -3722,7 +3782,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -3771,7 +3835,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -3820,7 +3888,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -4203,7 +4275,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -4252,7 +4328,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,
@@ -4301,7 +4381,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             },
             yaxis={
                 'showgrid': False,
-                'showticklabels': False
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
             },
             margin={
                 't': 20,

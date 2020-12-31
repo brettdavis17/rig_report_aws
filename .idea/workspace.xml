@@ -2,84 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4cebaca1-62cd-4a3e-96dd-9cbf0b896df9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components-0.11.0.dist-info/INSTALLER" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components-0.11.0.dist-info/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components-0.11.0.dist-info/METADATA" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components-0.11.0.dist-info/RECORD" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components-0.11.0.dist-info/WHEEL" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Alert.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Badge.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/ButtonGroup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Card.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardBody.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardColumns.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardDeck.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardFooter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardGroup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardHeader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardImg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardImgOverlay.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/CardLink.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Checkbox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Checklist.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Col.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Collapse.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Container.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/DropdownMenu.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/DropdownMenuItem.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Fade.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Form.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/FormFeedback.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/FormGroup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/FormText.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Input.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/InputGroup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/InputGroupAddon.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/InputGroupText.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Jumbotron.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Label.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/ListGroup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/ListGroupItem.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/ListGroupItemHeading.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/ListGroupItemText.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Modal.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/ModalBody.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/ModalFooter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/ModalHeader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Nav.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/NavItem.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/NavLink.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Navbar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/NavbarBrand.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/NavbarSimple.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/NavbarToggler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Popover.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/PopoverBody.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/PopoverHeader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Progress.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/RadioButton.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/RadioItems.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Row.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Select.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Spinner.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Tab.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Table.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Tabs.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Textarea.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Toast.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/Tooltip.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/dash_bootstrap_components.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_components/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/_table.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/venv/lib/python3.7/site-packages/dash_bootstrap_components/themes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application.py" beforeDir="false" afterPath="$PROJECT_DIR$/application.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/functions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,9 +49,10 @@
       <screen x="33" y="23" width="1247" height="777" />
     </state>
     <state x="512" y="312" key="Github.ShareDialog/33.23.1247.777@33.23.1247.777" timestamp="1607292503842" />
-    <state x="256" y="151" key="Vcs.Push.Dialog.v2" timestamp="1607918332470">
-      <screen x="34" y="23" width="1246" height="777" />
+    <state x="260" y="151" key="Vcs.Push.Dialog.v2" timestamp="1609124553697">
+      <screen x="39" y="23" width="1241" height="777" />
     </state>
+    <state x="260" y="151" key="Vcs.Push.Dialog.v2/1280.23.1920.1057/39.23.1241.777@39.23.1241.777" timestamp="1609124553697" />
     <state x="255" y="151" key="Vcs.Push.Dialog.v2/33.23.1247.777@33.23.1247.777" timestamp="1607293075772" />
     <state x="256" y="151" key="Vcs.Push.Dialog.v2/34.23.1246.777@34.23.1246.777" timestamp="1607918332470" />
   </component>
