@@ -413,8 +413,8 @@ def serve_layout():
 
 app.layout = serve_layout
 
-convert_dict = {'date': str}
-master_df = functions.get_overall_master_df().astype(convert_dict)
+# convert_dict = {'date': str}
+# master_df = functions.get_overall_master_df().astype(convert_dict)
 
 
 @app.callback(
@@ -661,9 +661,9 @@ def return_well_depth_checklist(select_all, clear_all):
     ]
 )
 def return_references(click, date, dropdown_value, states, basins, drill_for, locations, trajectories, well_depths):
-    current_df = master_df[master_df['date'] == date]  # unfiltered df for current week
+    # current_df = master_df[master_df['date'] == date]  # unfiltered df for current week
 
-    date_list = master_df['date'].unique().tolist()  # list of all unique dates
+    date_list = functions.get_date_list_asc()  # list of all unique dates
 
     one_week_date = date_list[date_list.index(date) - 1]  # date 1 week before selected date
     one_month_date = date_list[date_list.index(date) - 4]
@@ -673,23 +673,23 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
     three_year_date = date_list[date_list.index(date) - 156]
     five_year_date = date_list[date_list.index(date) - 260]
 
-    filtered_df = current_df[
-        current_df['state'].isin(states) &
-        current_df['basin'].isin(basins) &
-        current_df['drill_for'].isin(drill_for) &
-        current_df['location'].isin(locations) &
-        current_df['trajectory'].isin(trajectories) &
-        current_df['well_depth'].isin(well_depths)
-        ]  # filtered df for current week
+    # filtered_df = current_df[
+    #     current_df['state'].isin(states) &
+    #     current_df['basin'].isin(basins) &
+    #     current_df['drill_for'].isin(drill_for) &
+    #     current_df['location'].isin(locations) &
+    #     current_df['trajectory'].isin(trajectories) &
+    #     current_df['well_depth'].isin(well_depths)
+    #     ]  # filtered df for current week
 
-    filtered_overall_master_df = master_df[
-        master_df['state'].isin(states) &
-        master_df['basin'].isin(basins) &
-        master_df['drill_for'].isin(drill_for) &
-        master_df['location'].isin(locations) &
-        master_df['trajectory'].isin(trajectories) &
-        master_df['well_depth'].isin(well_depths)
-        ]  # filtered master df
+    # filtered_overall_master_df = master_df[
+    #     master_df['state'].isin(states) &
+    #     master_df['basin'].isin(basins) &
+    #     master_df['drill_for'].isin(drill_for) &
+    #     master_df['location'].isin(locations) &
+    #     master_df['trajectory'].isin(trajectories) &
+    #     master_df['well_depth'].isin(well_depths)
+    #     ]  # filtered master df
 
     plus_minus_colorscale = [
         '#660000', '#800000', '#990000', '#b30000', '#cc0000', '#e60000',
@@ -702,51 +702,29 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         reference_date = one_week_date
         scatter_reference_date = one_year_date
 
-        reference_df_uf = master_df[
-            master_df['date'] == reference_date
-        ]  # unfiltered df for 1 week before current week
+        df = functions.get_df(scatter_reference_date, date)
 
-        reference_df = reference_df_uf[
-        reference_df_uf['state'].isin(states) &
-        reference_df_uf['basin'].isin(basins) &
-        reference_df_uf['drill_for'].isin(drill_for) &
-        reference_df_uf['location'].isin(locations) &
-        reference_df_uf['trajectory'].isin(trajectories) &
-        reference_df_uf['well_depth'].isin(well_depths)
-        ]  # filtered df for 1 week before current week
+        filtered_df = df[
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+        ]
 
-        scatter_df_uf = master_df[
-            (master_df['date'] >= scatter_reference_date) & (master_df['date'] <= date)
-        ] #unfiltered df for scatter graph on indicator background
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
 
-        scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-        ][[
-            'date',
-            'rig_count'
-        ]].groupby('date').sum().reset_index() #filtered df for scatter graph on rig count indicator background
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
 
-        county_scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-        ][[
-            'date',
-            'county'
-        ]].groupby(['date'])['county'].nunique().reset_index()  # filtered df for scatter graph on county count indicator background
+        county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
+
 
         indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['rig_count'].sum(),
+                value=current_df['rig_count'].sum(),
                 delta={'reference': reference_df['rig_count'].sum()},
             ),
             go.Scatter(
@@ -786,7 +764,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         county_indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['county'].nunique(),
+                value=current_df['county'].nunique(),
                 delta={'reference': reference_df['county'].nunique()},
             ),
             go.Scatter(
@@ -823,10 +801,14 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         county_indicator_fig = go.Figure(data=county_indicator_data, layout=county_indicator_layout)
 
-        with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+        with urlopen(
+                'https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json'
+        ) as response:
             counties = json.load(response)
 
-        map_df = filtered_df[['fips', 'county', 'rig_count']].groupby(['fips', 'county']).sum().reset_index()
+        map_df = current_df[[
+            'fips', 'county', 'rig_count'
+        ]].groupby(['fips', 'county']).sum().reset_index()
 
         map_data = go.Choropleth(
             name='Counties',
@@ -858,7 +840,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        drill_for_df = filtered_df[[
+        drill_for_df = current_df[[
             'drill_for',
             'rig_count'
         ]].groupby('drill_for').sum().reset_index()
@@ -892,7 +874,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_pie_data, layout = drill_for_pie_layout)
 
-        well_depth_df = filtered_df[[
+        well_depth_df = current_df[[
             'well_depth', 'rig_count'
         ]].groupby('well_depth').sum().reset_index()
 
@@ -925,7 +907,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_df[[
+        trajectory_df = current_df[[
             'trajectory', 'rig_count'
         ]].groupby('trajectory').sum().reset_index()
 
@@ -958,7 +940,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         trajectory_fig = go.Figure(data=trajectory_data, layout=trajectory_layout)
 
-        state_table_df_raw = filtered_df[[
+        state_table_df_raw = current_df[[
             'state', 'rig_count'
         ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -1000,7 +982,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         state_table_data = state_final_table_df.to_dict('records')
 
-        basin_table_df_raw = filtered_df[[
+        basin_table_df_raw = current_df[[
             'basin', 'rig_count'
         ]].groupby(['basin']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -1042,7 +1024,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         basin_table_data = basin_final_table_df.to_dict('records')
 
-        county_table_df_raw = filtered_df[[
+        county_table_df_raw = current_df[[
             'county', 'rig_count'
         ]].groupby(['county']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -1088,60 +1070,34 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             state_table_columns, state_table_data, basin_table_columns, basin_table_data, \
             county_table_columns, county_table_data
 
+
     elif dropdown_value == '1w':
         reference_date = one_week_date
         scatter_reference_date = one_year_date
 
-        date_list = [
-            i for i in master_df['date'].unique() if i >= reference_date and i <= date
-        ]
+        df = functions.get_df(scatter_reference_date, date)
 
-        reference_df_uf = master_df[
-            master_df['date'] == reference_date
-            ]  # unfiltered df for 1 week before current week
+        filtered_df = df[
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+            ]
 
-        reference_df = reference_df_uf[
-            reference_df_uf['state'].isin(states) &
-            reference_df_uf['basin'].isin(basins) &
-            reference_df_uf['drill_for'].isin(drill_for) &
-            reference_df_uf['location'].isin(locations) &
-            reference_df_uf['trajectory'].isin(trajectories) &
-            reference_df_uf['well_depth'].isin(well_depths)
-            ]  # filtered df for 1 week before current week
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
 
-        scatter_df_uf = master_df[
-            (master_df['date'] >= scatter_reference_date) & (master_df['date'] <= date)
-            ]  # unfiltered df for scatter graph on indicator background
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
 
-        scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'rig_count'
-        ]].groupby('date').sum().reset_index()  # filtered df for scatter graph on rig count indicator background
+        county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
 
-        county_scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'county'
-        ]].groupby(['date'])[
-            'county'].nunique().reset_index()  # filtered df for scatter graph on county count indicator background
 
         indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['rig_count'].sum(),
+                value=current_df['rig_count'].sum(),
                 delta={'reference': reference_df['rig_count'].sum()},
             ),
             go.Scatter(
@@ -1152,8 +1108,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         indicator_layout = go.Layout(
-            # title='COGS',
-            # height=100,
             title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
@@ -1181,7 +1135,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         county_indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['county'].nunique(),
+                value=current_df['county'].nunique(),
                 delta={'reference': reference_df['county'].nunique()},
             ),
             go.Scatter(
@@ -1221,7 +1175,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
             counties = json.load(response)
 
-        selected_week_df_raw = filtered_df[[
+        selected_week_df_raw = current_df[[
             'fips', 'county', 'rig_count'
         ]].groupby(['fips', 'county']).sum().reset_index()
 
@@ -1243,7 +1197,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
 
-        # map_df = filtered_df[['fips', 'county', 'rig_count']].groupby(['fips', 'county']).sum().reset_index()
 
         map_data = go.Choropleth(
             name='Counties',
@@ -1276,14 +1229,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_overall_master_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        filtered_master_df = filtered_overall_master_df[
-            filtered_overall_master_df['date'].isin(date_list)
-        ]
 
-        drill_for_df = filtered_master_df[[
+        drill_for_df = filtered_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -1335,7 +1285,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
 
-        well_depth_df = filtered_master_df[[
+        well_depth_df = filtered_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -1347,7 +1297,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
 
         well_depth_totals_df['share'] = (
-                    (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total']))
+            (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
+        )
 
         well_depth_data = [
             go.Scatter(
@@ -1387,7 +1338,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_master_df[[
+        trajectory_df = filtered_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -1442,7 +1393,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by state section ######
 
-        state_table_df_raw = filtered_df[[
+        state_table_df_raw = current_df[[
             'state', 'rig_count'
         ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -1487,7 +1438,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by basin section ######
 
-        basin_table_df_raw = filtered_df[[
+        basin_table_df_raw = current_df[[
             'basin', 'rig_count'
         ]].groupby(['basin']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -1532,7 +1483,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by county section ######
 
-        county_table_df_raw = filtered_df[[
+        county_table_df_raw = current_df[[
             'county', 'rig_count'
         ]].groupby(['county']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -1580,62 +1531,32 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             state_table_columns, state_table_data, basin_table_columns, basin_table_data, \
             county_table_columns, county_table_data
 
-
     elif dropdown_value == '1m':
-
         reference_date = one_month_date
         scatter_reference_date = one_year_date
 
-        date_list = [
-            i for i in master_df['date'].unique() if i >= reference_date and i <= date
-        ]
+        df = functions.get_df(scatter_reference_date, date)
 
-        reference_df_uf = master_df[
-            master_df['date'] == reference_date
-            ]  # unfiltered df for 1 week before current week
+        filtered_df = df[
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+            ]
 
-        reference_df = reference_df_uf[
-            reference_df_uf['state'].isin(states) &
-            reference_df_uf['basin'].isin(basins) &
-            reference_df_uf['drill_for'].isin(drill_for) &
-            reference_df_uf['location'].isin(locations) &
-            reference_df_uf['trajectory'].isin(trajectories) &
-            reference_df_uf['well_depth'].isin(well_depths)
-            ]  # filtered df for 1 week before current week
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
 
-        scatter_df_uf = master_df[
-            (master_df['date'] >= scatter_reference_date) & (master_df['date'] <= date)
-            ]  # unfiltered df for scatter graph on indicator background
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
 
-        scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'rig_count'
-        ]].groupby('date').sum().reset_index()  # filtered df for scatter graph on rig count indicator background
-
-        county_scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'county'
-        ]].groupby(['date'])[
-            'county'].nunique().reset_index()  # filtered df for scatter graph on county count indicator background
+        county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
 
         indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['rig_count'].sum(),
+                value=current_df['rig_count'].sum(),
                 delta={'reference': reference_df['rig_count'].sum()},
             ),
             go.Scatter(
@@ -1646,8 +1567,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         indicator_layout = go.Layout(
-            # title='COGS',
-            # height=100,
             title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
@@ -1675,7 +1594,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         county_indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['county'].nunique(),
+                value=current_df['county'].nunique(),
                 delta={'reference': reference_df['county'].nunique()},
             ),
             go.Scatter(
@@ -1715,7 +1634,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
             counties = json.load(response)
 
-        selected_week_df_raw = filtered_df[[
+        selected_week_df_raw = current_df[[
             'fips', 'county', 'rig_count'
         ]].groupby(['fips', 'county']).sum().reset_index()
 
@@ -1737,8 +1656,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
 
-        # map_df = filtered_df[['fips', 'county', 'rig_count']].groupby(['fips', 'county']).sum().reset_index()
-
         map_data = go.Choropleth(
             name='Counties',
             geojson=counties,
@@ -1754,7 +1671,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-MONTH +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -1770,14 +1687,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_overall_master_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        filtered_master_df = filtered_overall_master_df[
-            filtered_overall_master_df['date'].isin(date_list)
-        ]
-
-        drill_for_df = filtered_master_df[[
+        drill_for_df = filtered_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -1801,7 +1714,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='1M DRILL-FOR HISTORY',
+            title_text='1W DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -1829,7 +1742,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_master_df[[
+        well_depth_df = filtered_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -1841,7 +1754,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
 
         well_depth_totals_df['share'] = (
-                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total']))
+                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
+        )
 
         well_depth_data = [
             go.Scatter(
@@ -1853,7 +1767,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='1M WELL-DEPTH HISTORY',
+            title_text='1W WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -1881,7 +1795,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_master_df[[
+        trajectory_df = filtered_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -1905,7 +1819,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='1M TRAJECTORY HISTORY',
+            title_text='1W TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -1935,7 +1849,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by state section ######
 
-        state_table_df_raw = filtered_df[[
+        state_table_df_raw = current_df[[
             'state', 'rig_count'
         ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -1979,7 +1893,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by basin section ######
 
-        basin_table_df_raw = filtered_df[[
+        basin_table_df_raw = current_df[[
             'basin', 'rig_count'
         ]].groupby(['basin']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -2023,7 +1937,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by county section ######
 
-        county_table_df_raw = filtered_df[[
+        county_table_df_raw = current_df[[
             'county', 'rig_count'
         ]].groupby(['county']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -2072,60 +1986,31 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
 
     elif dropdown_value == '3m':
-
         reference_date = three_month_date
         scatter_reference_date = one_year_date
 
-        date_list = [
-            i for i in master_df['date'].unique() if i >= reference_date and i <= date
-        ]
+        df = functions.get_df(scatter_reference_date, date)
 
-        reference_df_uf = master_df[
-            master_df['date'] == reference_date
-            ]  # unfiltered df for 1 week before current week
+        filtered_df = df[
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+            ]
 
-        reference_df = reference_df_uf[
-            reference_df_uf['state'].isin(states) &
-            reference_df_uf['basin'].isin(basins) &
-            reference_df_uf['drill_for'].isin(drill_for) &
-            reference_df_uf['location'].isin(locations) &
-            reference_df_uf['trajectory'].isin(trajectories) &
-            reference_df_uf['well_depth'].isin(well_depths)
-            ]  # filtered df for 1 week before current week
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
 
-        scatter_df_uf = master_df[
-            (master_df['date'] >= scatter_reference_date) & (master_df['date'] <= date)
-            ]  # unfiltered df for scatter graph on indicator background
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
 
-        scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'rig_count'
-        ]].groupby('date').sum().reset_index()  # filtered df for scatter graph on rig count indicator background
-
-        county_scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'county'
-        ]].groupby(['date'])[
-            'county'].nunique().reset_index()  # filtered df for scatter graph on county count indicator background
+        county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
 
         indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['rig_count'].sum(),
+                value=current_df['rig_count'].sum(),
                 delta={'reference': reference_df['rig_count'].sum()},
             ),
             go.Scatter(
@@ -2136,8 +2021,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         indicator_layout = go.Layout(
-            # title='COGS',
-            # height=100,
             title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
@@ -2165,7 +2048,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         county_indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['county'].nunique(),
+                value=current_df['county'].nunique(),
                 delta={'reference': reference_df['county'].nunique()},
             ),
             go.Scatter(
@@ -2205,7 +2088,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
             counties = json.load(response)
 
-        selected_week_df_raw = filtered_df[[
+        selected_week_df_raw = current_df[[
             'fips', 'county', 'rig_count'
         ]].groupby(['fips', 'county']).sum().reset_index()
 
@@ -2227,8 +2110,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
 
-        # map_df = filtered_df[['fips', 'county', 'rig_count']].groupby(['fips', 'county']).sum().reset_index()
-
         map_data = go.Choropleth(
             name='Counties',
             geojson=counties,
@@ -2244,7 +2125,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 3-MONTH +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -2260,14 +2141,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_overall_master_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        filtered_master_df = filtered_overall_master_df[
-            filtered_overall_master_df['date'].isin(date_list)
-        ]
-
-        drill_for_df = filtered_master_df[[
+        drill_for_df = filtered_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -2284,7 +2161,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         drill_for_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['date'],
                 y=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -2292,7 +2168,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='3M DRILL-FOR HISTORY',
+            title_text='1W DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2320,7 +2196,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_master_df[[
+        well_depth_df = filtered_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -2332,12 +2208,12 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
 
         well_depth_totals_df['share'] = (
-                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total']))
+                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
+        )
 
         well_depth_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['date'],
                 y=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -2345,7 +2221,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='3M WELL-DEPTH HISTORY',
+            title_text='1W WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2373,7 +2249,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_master_df[[
+        trajectory_df = filtered_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -2390,7 +2266,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         trajectory_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['date'],
                 y=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -2398,7 +2273,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='3M TRAJECTORY HISTORY',
+            title_text='1W TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2428,7 +2303,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by state section ######
 
-        state_table_df_raw = filtered_df[[
+        state_table_df_raw = current_df[[
             'state', 'rig_count'
         ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -2472,7 +2347,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by basin section ######
 
-        basin_table_df_raw = filtered_df[[
+        basin_table_df_raw = current_df[[
             'basin', 'rig_count'
         ]].groupby(['basin']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -2516,7 +2391,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by county section ######
 
-        county_table_df_raw = filtered_df[[
+        county_table_df_raw = current_df[[
             'county', 'rig_count'
         ]].groupby(['county']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -2565,60 +2440,31 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
 
     elif dropdown_value == '6m':
-
         reference_date = six_month_date
         scatter_reference_date = one_year_date
 
-        date_list = [
-            i for i in master_df['date'].unique() if i >= reference_date and i <= date
-        ]
+        df = functions.get_df(scatter_reference_date, date)
 
-        reference_df_uf = master_df[
-            master_df['date'] == reference_date
-            ]  # unfiltered df for 1 week before current week
+        filtered_df = df[
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+            ]
 
-        reference_df = reference_df_uf[
-            reference_df_uf['state'].isin(states) &
-            reference_df_uf['basin'].isin(basins) &
-            reference_df_uf['drill_for'].isin(drill_for) &
-            reference_df_uf['location'].isin(locations) &
-            reference_df_uf['trajectory'].isin(trajectories) &
-            reference_df_uf['well_depth'].isin(well_depths)
-            ]  # filtered df for 1 week before current week
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
 
-        scatter_df_uf = master_df[
-            (master_df['date'] >= scatter_reference_date) & (master_df['date'] <= date)
-            ]  # unfiltered df for scatter graph on indicator background
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
 
-        scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'rig_count'
-        ]].groupby('date').sum().reset_index()  # filtered df for scatter graph on rig count indicator background
-
-        county_scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'county'
-        ]].groupby(['date'])[
-            'county'].nunique().reset_index()  # filtered df for scatter graph on county count indicator background
+        county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
 
         indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['rig_count'].sum(),
+                value=current_df['rig_count'].sum(),
                 delta={'reference': reference_df['rig_count'].sum()},
             ),
             go.Scatter(
@@ -2629,8 +2475,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         indicator_layout = go.Layout(
-            # title='COGS',
-            # height=100,
             title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
@@ -2658,7 +2502,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         county_indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['county'].nunique(),
+                value=current_df['county'].nunique(),
                 delta={'reference': reference_df['county'].nunique()},
             ),
             go.Scatter(
@@ -2698,7 +2542,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
             counties = json.load(response)
 
-        selected_week_df_raw = filtered_df[[
+        selected_week_df_raw = current_df[[
             'fips', 'county', 'rig_count'
         ]].groupby(['fips', 'county']).sum().reset_index()
 
@@ -2720,8 +2564,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
 
-        # map_df = filtered_df[['fips', 'county', 'rig_count']].groupby(['fips', 'county']).sum().reset_index()
-
         map_data = go.Choropleth(
             name='Counties',
             geojson=counties,
@@ -2737,7 +2579,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 6-MONTH +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -2753,14 +2595,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_overall_master_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        filtered_master_df = filtered_overall_master_df[
-            filtered_overall_master_df['date'].isin(date_list)
-        ]
-
-        drill_for_df = filtered_master_df[[
+        drill_for_df = filtered_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -2777,7 +2615,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         drill_for_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['date'],
                 y=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -2785,7 +2622,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='6M DRILL-FOR HISTORY',
+            title_text='1W DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2813,7 +2650,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_master_df[[
+        well_depth_df = filtered_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -2825,12 +2662,12 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
 
         well_depth_totals_df['share'] = (
-                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total']))
+                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
+        )
 
         well_depth_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['date'],
                 y=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -2838,7 +2675,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='6M WELL-DEPTH HISTORY',
+            title_text='1W WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2866,7 +2703,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_master_df[[
+        trajectory_df = filtered_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -2883,7 +2720,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         trajectory_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['date'],
                 y=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -2891,7 +2727,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='6M TRAJECTORY HISTORY',
+            title_text='1W TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2921,7 +2757,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by state section ######
 
-        state_table_df_raw = filtered_df[[
+        state_table_df_raw = current_df[[
             'state', 'rig_count'
         ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -2965,7 +2801,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by basin section ######
 
-        basin_table_df_raw = filtered_df[[
+        basin_table_df_raw = current_df[[
             'basin', 'rig_count'
         ]].groupby(['basin']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -3009,7 +2845,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by county section ######
 
-        county_table_df_raw = filtered_df[[
+        county_table_df_raw = current_df[[
             'county', 'rig_count'
         ]].groupby(['county']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -3058,60 +2894,31 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
 
     elif dropdown_value == '1y':
-
         reference_date = one_year_date
-        scatter_reference_date = one_year_date
+        scatter_reference_date = reference_date
 
-        date_list = [
-            i for i in master_df['date'].unique() if i >= reference_date and i <= date
-        ]
+        df = functions.get_df(scatter_reference_date, date)
 
-        reference_df_uf = master_df[
-            master_df['date'] == reference_date
-            ]  # unfiltered df for 1 week before current week
+        filtered_df = df[
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+            ]
 
-        reference_df = reference_df_uf[
-            reference_df_uf['state'].isin(states) &
-            reference_df_uf['basin'].isin(basins) &
-            reference_df_uf['drill_for'].isin(drill_for) &
-            reference_df_uf['location'].isin(locations) &
-            reference_df_uf['trajectory'].isin(trajectories) &
-            reference_df_uf['well_depth'].isin(well_depths)
-            ]  # filtered df for 1 week before current week
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
 
-        scatter_df_uf = master_df[
-            (master_df['date'] >= scatter_reference_date) & (master_df['date'] <= date)
-            ]  # unfiltered df for scatter graph on indicator background
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
 
-        scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'rig_count'
-        ]].groupby('date').sum().reset_index()  # filtered df for scatter graph on rig count indicator background
-
-        county_scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'county'
-        ]].groupby(['date'])[
-            'county'].nunique().reset_index()  # filtered df for scatter graph on county count indicator background
+        county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
 
         indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['rig_count'].sum(),
+                value=current_df['rig_count'].sum(),
                 delta={'reference': reference_df['rig_count'].sum()},
             ),
             go.Scatter(
@@ -3122,8 +2929,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         indicator_layout = go.Layout(
-            # title='COGS',
-            # height=100,
             title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
@@ -3151,7 +2956,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         county_indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['county'].nunique(),
+                value=current_df['county'].nunique(),
                 delta={'reference': reference_df['county'].nunique()},
             ),
             go.Scatter(
@@ -3191,7 +2996,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
             counties = json.load(response)
 
-        selected_week_df_raw = filtered_df[[
+        selected_week_df_raw = current_df[[
             'fips', 'county', 'rig_count'
         ]].groupby(['fips', 'county']).sum().reset_index()
 
@@ -3213,8 +3018,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
 
-        # map_df = filtered_df[['fips', 'county', 'rig_count']].groupby(['fips', 'county']).sum().reset_index()
-
         map_data = go.Choropleth(
             name='Counties',
             geojson=counties,
@@ -3230,7 +3033,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-YEAR +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -3246,14 +3049,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_overall_master_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        filtered_master_df = filtered_overall_master_df[
-            filtered_overall_master_df['date'].isin(date_list)
-        ]
-
-        drill_for_df = filtered_master_df[[
+        drill_for_df = filtered_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -3270,7 +3069,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         drill_for_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['date'],
                 y=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -3278,7 +3076,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='1Y DRILL-FOR HISTORY',
+            title_text='1W DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3306,7 +3104,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_master_df[[
+        well_depth_df = filtered_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -3318,12 +3116,12 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
 
         well_depth_totals_df['share'] = (
-                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total']))
+                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
+        )
 
         well_depth_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['date'],
                 y=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -3331,7 +3129,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='1Y WELL-DEPTH HISTORY',
+            title_text='1W WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3359,7 +3157,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_master_df[[
+        trajectory_df = filtered_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -3376,7 +3174,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         trajectory_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['date'],
                 y=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -3384,7 +3181,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='1Y TRAJECTORY HISTORY',
+            title_text='1W TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3414,7 +3211,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by state section ######
 
-        state_table_df_raw = filtered_df[[
+        state_table_df_raw = current_df[[
             'state', 'rig_count'
         ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -3458,7 +3255,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by basin section ######
 
-        basin_table_df_raw = filtered_df[[
+        basin_table_df_raw = current_df[[
             'basin', 'rig_count'
         ]].groupby(['basin']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -3502,7 +3299,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by county section ######
 
-        county_table_df_raw = filtered_df[[
+        county_table_df_raw = current_df[[
             'county', 'rig_count'
         ]].groupby(['county']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -3550,73 +3347,43 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                county_table_columns, county_table_data
 
 
+
     elif dropdown_value == '3y':
-
         reference_date = three_year_date
-        scatter_reference_date = three_year_date
+        scatter_reference_date = reference_date
 
-        date_list = [
-            i for i in master_df['date'].unique() if i >= reference_date and i <= date
-        ]
+        df = functions.get_df(scatter_reference_date, date)
 
-        reference_df_uf = master_df[
-            master_df['date'] == reference_date
-            ]  # unfiltered df for 1 week before current week
+        filtered_df = df[
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+            ]
 
-        reference_df = reference_df_uf[
-            reference_df_uf['state'].isin(states) &
-            reference_df_uf['basin'].isin(basins) &
-            reference_df_uf['drill_for'].isin(drill_for) &
-            reference_df_uf['location'].isin(locations) &
-            reference_df_uf['trajectory'].isin(trajectories) &
-            reference_df_uf['well_depth'].isin(well_depths)
-            ]  # filtered df for 1 week before current week
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
 
-        scatter_df_uf = master_df[
-            (master_df['date'] >= scatter_reference_date) & (master_df['date'] <= date)
-            ]  # unfiltered df for scatter graph on indicator background
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
 
-        scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'rig_count'
-        ]].groupby('date').sum().reset_index()  # filtered df for scatter graph on rig count indicator background
-
-        county_scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'county'
-        ]].groupby(['date'])[
-            'county'].nunique().reset_index()  # filtered df for scatter graph on county count indicator background
+        county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
 
         indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['rig_count'].sum(),
+                value=current_df['rig_count'].sum(),
                 delta={'reference': reference_df['rig_count'].sum()},
             ),
             go.Scatter(
-                name='3-YEAR TREND',
+                name='1-YEAR TREND',
                 x=scatter_df['date'].tolist(),
                 y=scatter_df['rig_count'].tolist()
             )
         ]
 
         indicator_layout = go.Layout(
-            # title='COGS',
-            # height=100,
             title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
@@ -3644,11 +3411,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         county_indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['county'].nunique(),
+                value=current_df['county'].nunique(),
                 delta={'reference': reference_df['county'].nunique()},
             ),
             go.Scatter(
-                name='3-YEAR TREND',
+                name='1-YEAR TREND',
                 x=county_scatter_df['date'].tolist(),
                 y=county_scatter_df['county'].tolist()
             )
@@ -3684,7 +3451,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
             counties = json.load(response)
 
-        selected_week_df_raw = filtered_df[[
+        selected_week_df_raw = current_df[[
             'fips', 'county', 'rig_count'
         ]].groupby(['fips', 'county']).sum().reset_index()
 
@@ -3706,8 +3473,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
 
-        # map_df = filtered_df[['fips', 'county', 'rig_count']].groupby(['fips', 'county']).sum().reset_index()
-
         map_data = go.Choropleth(
             name='Counties',
             geojson=counties,
@@ -3723,7 +3488,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-YEAR +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -3739,14 +3504,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_overall_master_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        filtered_master_df = filtered_overall_master_df[
-            filtered_overall_master_df['date'].isin(date_list)
-        ]
-
-        drill_for_df = filtered_master_df[[
+        drill_for_df = filtered_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -3763,7 +3524,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         drill_for_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['date'],
                 y=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -3771,7 +3531,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='3Y DRILL-FOR HISTORY',
+            title_text='1W DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3799,7 +3559,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_master_df[[
+        well_depth_df = filtered_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -3811,12 +3571,12 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
 
         well_depth_totals_df['share'] = (
-                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total']))
+                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
+        )
 
         well_depth_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['date'],
                 y=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -3824,7 +3584,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='3Y WELL-DEPTH HISTORY',
+            title_text='1W WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3852,7 +3612,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_master_df[[
+        trajectory_df = filtered_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -3869,7 +3629,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         trajectory_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['date'],
                 y=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -3877,7 +3636,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='3Y TRAJECTORY HISTORY',
+            title_text='1W TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3907,7 +3666,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by state section ######
 
-        state_table_df_raw = filtered_df[[
+        state_table_df_raw = current_df[[
             'state', 'rig_count'
         ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -3951,7 +3710,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by basin section ######
 
-        basin_table_df_raw = filtered_df[[
+        basin_table_df_raw = current_df[[
             'basin', 'rig_count'
         ]].groupby(['basin']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -3995,7 +3754,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by county section ######
 
-        county_table_df_raw = filtered_df[[
+        county_table_df_raw = current_df[[
             'county', 'rig_count'
         ]].groupby(['county']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -4044,72 +3803,41 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
 
     else:
-
         reference_date = five_year_date
-        scatter_reference_date = five_year_date
+        scatter_reference_date = reference_date
 
-        date_list = [
-            i for i in master_df['date'].unique() if i >= reference_date and i <= date
-        ]
+        df = functions.get_df(scatter_reference_date, date)
 
-        reference_df_uf = master_df[
-            master_df['date'] == reference_date
-            ]  # unfiltered df for 1 week before current week
+        filtered_df = df[
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+            ]
 
-        reference_df = reference_df_uf[
-            reference_df_uf['state'].isin(states) &
-            reference_df_uf['basin'].isin(basins) &
-            reference_df_uf['drill_for'].isin(drill_for) &
-            reference_df_uf['location'].isin(locations) &
-            reference_df_uf['trajectory'].isin(trajectories) &
-            reference_df_uf['well_depth'].isin(well_depths)
-            ]  # filtered df for 1 week before current week
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
 
-        scatter_df_uf = master_df[
-            (master_df['date'] >= scatter_reference_date) & (master_df['date'] <= date)
-            ]  # unfiltered df for scatter graph on indicator background
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
 
-        scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'rig_count'
-        ]].groupby('date').sum().reset_index()  # filtered df for scatter graph on rig count indicator background
-
-        county_scatter_df = scatter_df_uf[
-            scatter_df_uf['state'].isin(states) &
-            scatter_df_uf['basin'].isin(basins) &
-            scatter_df_uf['drill_for'].isin(drill_for) &
-            scatter_df_uf['location'].isin(locations) &
-            scatter_df_uf['trajectory'].isin(trajectories) &
-            scatter_df_uf['well_depth'].isin(well_depths)
-            ][[
-            'date',
-            'county'
-        ]].groupby(['date'])[
-            'county'].nunique().reset_index()  # filtered df for scatter graph on county count indicator background
+        county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
 
         indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['rig_count'].sum(),
+                value=current_df['rig_count'].sum(),
                 delta={'reference': reference_df['rig_count'].sum()},
             ),
             go.Scatter(
-                name='5-YEAR TREND',
+                name='1-YEAR TREND',
                 x=scatter_df['date'].tolist(),
                 y=scatter_df['rig_count'].tolist()
             )
         ]
 
         indicator_layout = go.Layout(
-            # title='COGS',
-            # height=100,
             title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
@@ -4137,11 +3865,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         county_indicator_data = [
             go.Indicator(
                 mode='number+delta',
-                value=filtered_df['county'].nunique(),
+                value=current_df['county'].nunique(),
                 delta={'reference': reference_df['county'].nunique()},
             ),
             go.Scatter(
-                name='5-YEAR TREND',
+                name='1-YEAR TREND',
                 x=county_scatter_df['date'].tolist(),
                 y=county_scatter_df['county'].tolist()
             )
@@ -4177,7 +3905,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
             counties = json.load(response)
 
-        selected_week_df_raw = filtered_df[[
+        selected_week_df_raw = current_df[[
             'fips', 'county', 'rig_count'
         ]].groupby(['fips', 'county']).sum().reset_index()
 
@@ -4199,8 +3927,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
 
-        # map_df = filtered_df[['fips', 'county', 'rig_count']].groupby(['fips', 'county']).sum().reset_index()
-
         map_data = go.Choropleth(
             name='Counties',
             geojson=counties,
@@ -4216,7 +3942,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 3-YEAR +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -4232,14 +3958,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_overall_master_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        filtered_master_df = filtered_overall_master_df[
-            filtered_overall_master_df['date'].isin(date_list)
-        ]
-
-        drill_for_df = filtered_master_df[[
+        drill_for_df = filtered_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -4256,7 +3978,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         drill_for_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['date'],
                 y=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -4264,7 +3985,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='5Y DRILL-FOR HISTORY',
+            title_text='1W DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -4292,7 +4013,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_master_df[[
+        well_depth_df = filtered_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -4304,12 +4025,12 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
 
         well_depth_totals_df['share'] = (
-                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total']))
+                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
+        )
 
         well_depth_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['date'],
                 y=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -4317,7 +4038,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='5Y WELL-DEPTH HISTORY',
+            title_text='1W WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -4345,7 +4066,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_master_df[[
+        trajectory_df = filtered_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -4362,7 +4083,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         trajectory_data = [
             go.Scatter(
                 name=i[:4],
-                mode='lines',
                 x=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['date'],
                 y=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['share'],
                 hovertemplate='%{x}<br>' + i + '<br>%{y}'
@@ -4370,7 +4090,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='5Y TRAJECTORY HISTORY',
+            title_text='1W TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -4400,7 +4120,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by state section ######
 
-        state_table_df_raw = filtered_df[[
+        state_table_df_raw = current_df[[
             'state', 'rig_count'
         ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -4444,7 +4164,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by basin section ######
 
-        basin_table_df_raw = filtered_df[[
+        basin_table_df_raw = current_df[[
             'basin', 'rig_count'
         ]].groupby(['basin']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -4488,7 +4208,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         #### rankings by county section ######
 
-        county_table_df_raw = filtered_df[[
+        county_table_df_raw = current_df[[
             'county', 'rig_count'
         ]].groupby(['county']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
 
@@ -4534,166 +4254,6 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                drill_for_fig, well_depth_fig, trajectory_fig, \
                state_table_columns, state_table_data, basin_table_columns, basin_table_data, \
                county_table_columns, county_table_data
-    #     reference_df_uf = master_df[
-    #         master_df['date'] == one_month_date
-    #     ]  # unfiltered df for 1 month before current week
-    #
-    #     reference_df = reference_df_uf[
-    #         reference_df_uf['state'].isin(states) &
-    #         reference_df_uf['basin'].isin(basins) &
-    #         reference_df_uf['drill_for'].isin(drill_for) &
-    #         reference_df_uf['location'].isin(locations) &
-    #         reference_df_uf['trajectory'].isin(trajectories) &
-    #         reference_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for 1 month before current week
-    #
-    #     scatter_df_uf = master_df[
-    #         (master_df['date'] >= one_year_date) & (master_df['date'] <= date)
-    #         ]  # unfiltered df for scatter graph on indicator background
-    #
-    #     scatter_df = scatter_df_uf[
-    #         scatter_df_uf['state'].isin(states) &
-    #         scatter_df_uf['basin'].isin(basins) &
-    #         scatter_df_uf['drill_for'].isin(drill_for) &
-    #         scatter_df_uf['location'].isin(locations) &
-    #         scatter_df_uf['trajectory'].isin(trajectories) &
-    #         scatter_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for scatter graph on indicator background
-    #
-    # elif dropdown_value == '3m':
-    #     reference_df_uf = master_df[
-    #         master_df['date'] == three_month_date
-    #         ]  # unfiltered df for 3 months before current week
-    #
-    #     reference_df = reference_df_uf[
-    #         reference_df_uf['state'].isin(states) &
-    #         reference_df_uf['basin'].isin(basins) &
-    #         reference_df_uf['drill_for'].isin(drill_for) &
-    #         reference_df_uf['location'].isin(locations) &
-    #         reference_df_uf['trajectory'].isin(trajectories) &
-    #         reference_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for 3 months before current week
-    #
-    #     scatter_df_uf = master_df[
-    #         (master_df['date'] >= one_year_date) & (master_df['date'] <= date)
-    #         ]  # unfiltered df for scatter graph on indicator background
-    #
-    #     scatter_df = scatter_df_uf[
-    #         scatter_df_uf['state'].isin(states) &
-    #         scatter_df_uf['basin'].isin(basins) &
-    #         scatter_df_uf['drill_for'].isin(drill_for) &
-    #         scatter_df_uf['location'].isin(locations) &
-    #         scatter_df_uf['trajectory'].isin(trajectories) &
-    #         scatter_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for scatter graph on indicator background
-    #
-    # elif dropdown_value == '6m':
-    #     reference_df_uf = master_df[
-    #         master_df['date'] == six_month_date
-    #         ]  # unfiltered df for 6 months before current week
-    #
-    #     reference_df = reference_df_uf[
-    #         reference_df_uf['state'].isin(states) &
-    #         reference_df_uf['basin'].isin(basins) &
-    #         reference_df_uf['drill_for'].isin(drill_for) &
-    #         reference_df_uf['location'].isin(locations) &
-    #         reference_df_uf['trajectory'].isin(trajectories) &
-    #         reference_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for 6 months before current week
-    #
-    #     scatter_df_uf = master_df[
-    #         (master_df['date'] >= one_year_date) & (master_df['date'] <= date)
-    #         ]  # unfiltered df for scatter graph on indicator background
-    #
-    #     scatter_df = scatter_df_uf[
-    #         scatter_df_uf['state'].isin(states) &
-    #         scatter_df_uf['basin'].isin(basins) &
-    #         scatter_df_uf['drill_for'].isin(drill_for) &
-    #         scatter_df_uf['location'].isin(locations) &
-    #         scatter_df_uf['trajectory'].isin(trajectories) &
-    #         scatter_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for scatter graph on indicator background
-    #
-    # elif dropdown_value == '1y':
-    #     reference_df_uf = master_df[
-    #         master_df['date'] == one_year_date
-    #         ]  # unfiltered df for 1 year before current week
-    #
-    #     reference_df = reference_df_uf[
-    #         reference_df_uf['state'].isin(states) &
-    #         reference_df_uf['basin'].isin(basins) &
-    #         reference_df_uf['drill_for'].isin(drill_for) &
-    #         reference_df_uf['location'].isin(locations) &
-    #         reference_df_uf['trajectory'].isin(trajectories) &
-    #         reference_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for 1 year before current week
-    #
-    #     scatter_df_uf = master_df[
-    #         (master_df['date'] >= one_year_date) & (master_df['date'] <= date)
-    #         ]  # unfiltered df for scatter graph on indicator background
-    #
-    #     scatter_df = scatter_df_uf[
-    #         scatter_df_uf['state'].isin(states) &
-    #         scatter_df_uf['basin'].isin(basins) &
-    #         scatter_df_uf['drill_for'].isin(drill_for) &
-    #         scatter_df_uf['location'].isin(locations) &
-    #         scatter_df_uf['trajectory'].isin(trajectories) &
-    #         scatter_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for scatter graph on indicator background
-    #
-    # elif dropdown_value == '3y':
-    #     reference_df_uf = master_df[
-    #         master_df['date'] == three_year_date
-    #         ]  # unfiltered df for 3 years before current week
-    #
-    #     reference_df = reference_df_uf[
-    #         reference_df_uf['state'].isin(states) &
-    #         reference_df_uf['basin'].isin(basins) &
-    #         reference_df_uf['drill_for'].isin(drill_for) &
-    #         reference_df_uf['location'].isin(locations) &
-    #         reference_df_uf['trajectory'].isin(trajectories) &
-    #         reference_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for 3 years before current week
-    #
-    #     scatter_df_uf = master_df[
-    #         (master_df['date'] >= three_year_date) & (master_df['date'] <= date)
-    #         ]  # unfiltered df for scatter graph on indicator background
-    #
-    #     scatter_df = scatter_df_uf[
-    #         scatter_df_uf['state'].isin(states) &
-    #         scatter_df_uf['basin'].isin(basins) &
-    #         scatter_df_uf['drill_for'].isin(drill_for) &
-    #         scatter_df_uf['location'].isin(locations) &
-    #         scatter_df_uf['trajectory'].isin(trajectories) &
-    #         scatter_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for scatter graph on indicator background
-    #
-    # else:
-    #     reference_df_uf = master_df[
-    #         master_df['date'] == five_year_date
-    #         ]  # unfiltered df for 5 years before current week
-    #
-    #     reference_df = reference_df_uf[
-    #         reference_df_uf['state'].isin(states) &
-    #         reference_df_uf['basin'].isin(basins) &
-    #         reference_df_uf['drill_for'].isin(drill_for) &
-    #         reference_df_uf['location'].isin(locations) &
-    #         reference_df_uf['trajectory'].isin(trajectories) &
-    #         reference_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for 5 years before current week
-    #
-    #     scatter_df_uf = master_df[
-    #         (master_df['date'] >= five_year_date) & (master_df['date'] <= date)
-    #         ]  # unfiltered df for scatter graph on indicator background
-    #
-    #     scatter_df = scatter_df_uf[
-    #         scatter_df_uf['state'].isin(states) &
-    #         scatter_df_uf['basin'].isin(basins) &
-    #         scatter_df_uf['drill_for'].isin(drill_for) &
-    #         scatter_df_uf['location'].isin(locations) &
-    #         scatter_df_uf['trajectory'].isin(trajectories) &
-    #         scatter_df_uf['well_depth'].isin(well_depths)
-    #         ]  # filtered df for scatter graph on indicator background
 
 
 if __name__ == '__main__':

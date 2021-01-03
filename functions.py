@@ -50,6 +50,38 @@ def get_date_list():
     return dates_list
 
 
+def get_date_list_asc():
+
+    conn = psycopg2.connect(
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+
+    c = conn.cursor()
+
+    sql = '''
+        SELECT DISTINCT publish_date as date
+        FROM main
+        ORDER BY date ASC
+    '''
+
+    df = pd.read_sql(
+        sql,
+        conn
+    )
+
+    dates_list = df['date'].astype(str).to_list()
+
+    # dates_list = df['date'].tolist()
+
+    conn.close()
+
+    return dates_list
+
+
 def get_state_list():
 
     conn = psycopg2.connect(
@@ -285,6 +317,38 @@ def get_overall_master_df():
     conn.close()
 
     return df
+
+def get_df(first_date, second_date):
+    conn = psycopg2.connect(
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+
+    sql = '''
+        SELECT c.fips as fips, m.county_and_state as county, m.basin as basin,
+            m.drill_for as drill_for, m.location as location, m.trajectory as trajectory, m.well_depth, 
+            m.rig_count as rig_count, m.state_or_province as state, m.publish_date as date
+        FROM main AS m
+        LEFT JOIN counties_and_states_master AS c ON c.county_and_state = m.county_and_state
+        WHERE publish_date >= ('%s') AND publish_date <= ('%s')
+        ORDER BY publish_date ASC
+    '''
+
+    sql_input = (first_date, second_date)
+
+    final_sql = sql % sql_input
+
+    df = pd.read_sql(final_sql, conn)
+
+    conn.close()
+
+    convert_dict = {'date': str}
+    dff = df.astype(convert_dict)
+
+    return dff
 
 
 def get_max_date():
