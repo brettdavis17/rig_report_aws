@@ -4,7 +4,6 @@
     <list default="true" id="4cebaca1-62cd-4a3e-96dd-9cbf0b896df9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application.py" beforeDir="false" afterPath="$PROJECT_DIR$/application.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/functions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,11 +49,12 @@
       <screen x="33" y="23" width="1247" height="777" />
     </state>
     <state x="512" y="312" key="Github.ShareDialog/33.23.1247.777@33.23.1247.777" timestamp="1607292503842" />
-    <state x="260" y="151" key="Vcs.Push.Dialog.v2" timestamp="1609124553697">
-      <screen x="39" y="23" width="1241" height="777" />
+    <state x="259" y="151" key="Vcs.Push.Dialog.v2" timestamp="1609643486205">
+      <screen x="38" y="23" width="1242" height="777" />
     </state>
     <state x="260" y="151" key="Vcs.Push.Dialog.v2/1280.23.1920.1057/39.23.1241.777@39.23.1241.777" timestamp="1609124553697" />
     <state x="255" y="151" key="Vcs.Push.Dialog.v2/33.23.1247.777@33.23.1247.777" timestamp="1607293075772" />
     <state x="256" y="151" key="Vcs.Push.Dialog.v2/34.23.1246.777@34.23.1246.777" timestamp="1607918332470" />
+    <state x="259" y="151" key="Vcs.Push.Dialog.v2/38.23.1242.777@38.23.1242.777" timestamp="1609643486205" />
   </component>
 </project>

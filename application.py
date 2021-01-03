@@ -1671,7 +1671,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 1-MONTH +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -1714,7 +1714,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='1W DRILL-FOR HISTORY',
+            title_text='1M DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -1767,7 +1767,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='1W WELL-DEPTH HISTORY',
+            title_text='1M WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -1819,7 +1819,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='1W TRAJECTORY HISTORY',
+            title_text='1M TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2125,7 +2125,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 3-MONTH +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -2168,7 +2168,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='1W DRILL-FOR HISTORY',
+            title_text='3M DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2221,7 +2221,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='1W WELL-DEPTH HISTORY',
+            title_text='3M WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2273,7 +2273,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='1W TRAJECTORY HISTORY',
+            title_text='3M TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2579,7 +2579,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 6-MONTH +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -2622,7 +2622,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='1W DRILL-FOR HISTORY',
+            title_text='6M DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2675,7 +2675,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='1W WELL-DEPTH HISTORY',
+            title_text='6M WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -2727,7 +2727,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='1W TRAJECTORY HISTORY',
+            title_text='6M TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3033,7 +3033,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 1-YEAR +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -3076,7 +3076,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='1W DRILL-FOR HISTORY',
+            title_text='1Y DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3129,7 +3129,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='1W WELL-DEPTH HISTORY',
+            title_text='1Y WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3181,7 +3181,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='1W TRAJECTORY HISTORY',
+            title_text='1Y TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3488,7 +3488,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 3-YEAR +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -3531,7 +3531,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='1W DRILL-FOR HISTORY',
+            title_text='3Y DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3584,7 +3584,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='1W WELL-DEPTH HISTORY',
+            title_text='3Y WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3636,7 +3636,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='1W TRAJECTORY HISTORY',
+            title_text='3Y TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
@@ -3942,7 +3942,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 'scope': 'usa',
                 'showlakes': True
             },
-            title_text='COUNTY-LEVEL 1-WEEK +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            title_text='COUNTY-LEVEL 5-YEAR +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
             titlefont={
                 'size': 8
             },
@@ -3985,7 +3985,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         drill_for_layout = go.Layout(
-            title_text='1W DRILL-FOR HISTORY',
+            title_text='5Y DRILL-FOR HISTORY',
             titlefont={
                 'size': 8
             },
@@ -4038,7 +4038,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         well_depth_layout = go.Layout(
-            title_text='1W WELL-DEPTH HISTORY',
+            title_text='5Y WELL-DEPTH HISTORY',
             titlefont={
                 'size': 8
             },
@@ -4090,7 +4090,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         ]
 
         trajectory_layout = go.Layout(
-            title_text='1W TRAJECTORY HISTORY',
+            title_text='5Y TRAJECTORY HISTORY',
             titlefont={
                 'size': 8
             },
