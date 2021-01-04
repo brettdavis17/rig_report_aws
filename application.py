@@ -850,6 +850,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 labels=drill_for_df['drill_for'].tolist(),
                 values=drill_for_df['rig_count'].tolist(),
                 textposition='inside',
+                textinfo='label+percent',
                 textfont={
                     'size': 8
                 }
@@ -883,6 +884,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 labels=well_depth_df['well_depth'].tolist(),
                 values=well_depth_df['rig_count'].tolist(),
                 textposition='inside',
+                textinfo='label+percent',
                 textfont={
                     'size': 8
                 }
@@ -916,6 +918,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
                 labels=trajectory_df['trajectory'].tolist(),
                 values=trajectory_df['rig_count'].tolist(),
                 textposition='inside',
+                textinfo='label+percent',
                 textfont={
                     'size': 8
                 }
@@ -1077,6 +1080,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         df = functions.get_df(scatter_reference_date, date)
 
+        share_df = functions.get_df(reference_date, date)
+
         filtered_df = df[
             df['state'].isin(states) &
             df['basin'].isin(basins) &
@@ -1084,7 +1089,16 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             df['location'].isin(locations) &
             df['trajectory'].isin(trajectories) &
             df['well_depth'].isin(well_depths)
-            ]
+        ]
+
+        filtered_share_df = share_df[
+            share_df['state'].isin(states) &
+            share_df['basin'].isin(basins) &
+            share_df['drill_for'].isin(drill_for) &
+            share_df['location'].isin(locations) &
+            share_df['trajectory'].isin(trajectories) &
+            share_df['well_depth'].isin(well_depths)
+        ]
 
         current_df = filtered_df[filtered_df['date'] == date]
         reference_df = filtered_df[filtered_df['date'] == reference_date]
@@ -1229,11 +1243,11 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
 
-        drill_for_df = filtered_df[[
+        drill_for_df = filtered_share_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -1285,7 +1299,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
 
-        well_depth_df = filtered_df[[
+        well_depth_df = filtered_share_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -1338,7 +1352,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_df[[
+        trajectory_df = filtered_share_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -1537,6 +1551,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         df = functions.get_df(scatter_reference_date, date)
 
+        share_df = functions.get_df(reference_date, date)
+
         filtered_df = df[
             df['state'].isin(states) &
             df['basin'].isin(basins) &
@@ -1544,7 +1560,17 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             df['location'].isin(locations) &
             df['trajectory'].isin(trajectories) &
             df['well_depth'].isin(well_depths)
-            ]
+        ]
+
+        filtered_share_df = share_df[
+            share_df['state'].isin(states) &
+            share_df['basin'].isin(basins) &
+            share_df['drill_for'].isin(drill_for) &
+            share_df['location'].isin(locations) &
+            share_df['trajectory'].isin(trajectories) &
+            share_df['well_depth'].isin(well_depths)
+        ]
+
 
         current_df = filtered_df[filtered_df['date'] == date]
         reference_df = filtered_df[filtered_df['date'] == reference_date]
@@ -1687,10 +1713,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        drill_for_df = filtered_df[[
+        drill_for_df = filtered_share_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -1742,7 +1768,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_df[[
+        well_depth_df = filtered_share_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -1795,7 +1821,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_df[[
+        trajectory_df = filtered_share_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -1991,6 +2017,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         df = functions.get_df(scatter_reference_date, date)
 
+        share_df = functions.get_df(reference_date, date)
+
         filtered_df = df[
             df['state'].isin(states) &
             df['basin'].isin(basins) &
@@ -1998,7 +2026,17 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             df['location'].isin(locations) &
             df['trajectory'].isin(trajectories) &
             df['well_depth'].isin(well_depths)
-            ]
+        ]
+
+        filtered_share_df = share_df[
+            share_df['state'].isin(states) &
+            share_df['basin'].isin(basins) &
+            share_df['drill_for'].isin(drill_for) &
+            share_df['location'].isin(locations) &
+            share_df['trajectory'].isin(trajectories) &
+            share_df['well_depth'].isin(well_depths)
+        ]
+
 
         current_df = filtered_df[filtered_df['date'] == date]
         reference_df = filtered_df[filtered_df['date'] == reference_date]
@@ -2141,10 +2179,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        drill_for_df = filtered_df[[
+        drill_for_df = filtered_share_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -2196,7 +2234,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_df[[
+        well_depth_df = filtered_share_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -2249,7 +2287,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_df[[
+        trajectory_df = filtered_share_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -2445,6 +2483,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         df = functions.get_df(scatter_reference_date, date)
 
+        share_df = functions.get_df(reference_date, date)
+
         filtered_df = df[
             df['state'].isin(states) &
             df['basin'].isin(basins) &
@@ -2452,7 +2492,17 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             df['location'].isin(locations) &
             df['trajectory'].isin(trajectories) &
             df['well_depth'].isin(well_depths)
-            ]
+        ]
+
+        filtered_share_df = share_df[
+            share_df['state'].isin(states) &
+            share_df['basin'].isin(basins) &
+            share_df['drill_for'].isin(drill_for) &
+            share_df['location'].isin(locations) &
+            share_df['trajectory'].isin(trajectories) &
+            share_df['well_depth'].isin(well_depths)
+        ]
+
 
         current_df = filtered_df[filtered_df['date'] == date]
         reference_df = filtered_df[filtered_df['date'] == reference_date]
@@ -2595,10 +2645,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        drill_for_df = filtered_df[[
+        drill_for_df = filtered_share_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -2650,7 +2700,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_df[[
+        well_depth_df = filtered_share_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -2703,7 +2753,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_df[[
+        trajectory_df = filtered_share_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -2899,6 +2949,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         df = functions.get_df(scatter_reference_date, date)
 
+        share_df = functions.get_df(reference_date, date)
+
         filtered_df = df[
             df['state'].isin(states) &
             df['basin'].isin(basins) &
@@ -2906,7 +2958,17 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             df['location'].isin(locations) &
             df['trajectory'].isin(trajectories) &
             df['well_depth'].isin(well_depths)
-            ]
+        ]
+
+        filtered_share_df = share_df[
+            share_df['state'].isin(states) &
+            share_df['basin'].isin(basins) &
+            share_df['drill_for'].isin(drill_for) &
+            share_df['location'].isin(locations) &
+            share_df['trajectory'].isin(trajectories) &
+            share_df['well_depth'].isin(well_depths)
+        ]
+
 
         current_df = filtered_df[filtered_df['date'] == date]
         reference_df = filtered_df[filtered_df['date'] == reference_date]
@@ -3049,10 +3111,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        drill_for_df = filtered_df[[
+        drill_for_df = filtered_share_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -3104,7 +3166,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_df[[
+        well_depth_df = filtered_share_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -3157,7 +3219,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_df[[
+        trajectory_df = filtered_share_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -3354,6 +3416,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         df = functions.get_df(scatter_reference_date, date)
 
+        share_df = functions.get_df(reference_date, date)
+
         filtered_df = df[
             df['state'].isin(states) &
             df['basin'].isin(basins) &
@@ -3361,7 +3425,17 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             df['location'].isin(locations) &
             df['trajectory'].isin(trajectories) &
             df['well_depth'].isin(well_depths)
-            ]
+        ]
+
+        filtered_share_df = share_df[
+            share_df['state'].isin(states) &
+            share_df['basin'].isin(basins) &
+            share_df['drill_for'].isin(drill_for) &
+            share_df['location'].isin(locations) &
+            share_df['trajectory'].isin(trajectories) &
+            share_df['well_depth'].isin(well_depths)
+        ]
+
 
         current_df = filtered_df[filtered_df['date'] == date]
         reference_df = filtered_df[filtered_df['date'] == reference_date]
@@ -3504,10 +3578,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        drill_for_df = filtered_df[[
+        drill_for_df = filtered_share_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -3559,7 +3633,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_df[[
+        well_depth_df = filtered_share_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -3612,7 +3686,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_df[[
+        trajectory_df = filtered_share_df[[
             'date',
             'trajectory',
             'rig_count'
@@ -3808,6 +3882,8 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         df = functions.get_df(scatter_reference_date, date)
 
+        share_df = functions.get_df(reference_date, date)
+
         filtered_df = df[
             df['state'].isin(states) &
             df['basin'].isin(basins) &
@@ -3815,7 +3891,17 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
             df['location'].isin(locations) &
             df['trajectory'].isin(trajectories) &
             df['well_depth'].isin(well_depths)
-            ]
+        ]
+
+        filtered_share_df = share_df[
+            share_df['state'].isin(states) &
+            share_df['basin'].isin(basins) &
+            share_df['drill_for'].isin(drill_for) &
+            share_df['location'].isin(locations) &
+            share_df['trajectory'].isin(trajectories) &
+            share_df['well_depth'].isin(well_depths)
+        ]
+
 
         current_df = filtered_df[filtered_df['date'] == date]
         reference_df = filtered_df[filtered_df['date'] == reference_date]
@@ -3958,10 +4044,10 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        totals_df_raw = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
         totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
 
-        drill_for_df = filtered_df[[
+        drill_for_df = filtered_share_df[[
             'date',
             'drill_for',
             'rig_count'
@@ -4013,7 +4099,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
 
-        well_depth_df = filtered_df[[
+        well_depth_df = filtered_share_df[[
             'date',
             'well_depth',
             'rig_count'
@@ -4066,7 +4152,7 @@ def return_references(click, date, dropdown_value, states, basins, drill_for, lo
 
         well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
 
-        trajectory_df = filtered_df[[
+        trajectory_df = filtered_share_df[[
             'date',
             'trajectory',
             'rig_count'
