@@ -12,6 +12,11 @@ body {
   padding: 0;
 }
 
+.dash-table-container .row {
+  display: block;
+  margin: 0;
+}
+
 /* Table of contents
 ––––––––––––––––––––––––––––––––––––––––––––––––––
 - Plotly.js

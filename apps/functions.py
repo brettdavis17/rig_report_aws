@@ -32,7 +32,7 @@ def get_date_list():
 
     sql = '''
         SELECT DISTINCT publish_date as date
-        FROM main
+        FROM new_main
         ORDER BY date DESC
     '''
 
@@ -64,7 +64,7 @@ def get_date_list_asc():
 
     sql = '''
         SELECT DISTINCT publish_date as date
-        FROM main
+        FROM new_main
         ORDER BY date ASC
     '''
 
@@ -81,6 +81,37 @@ def get_date_list_asc():
 
     return dates_list
 
+date_list = get_date_list_asc()
+
+def get_country_list():
+
+    conn = psycopg2.connect(
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+
+    c = conn.cursor()
+
+    sql = '''
+        SELECT DISTINCT country as country
+        FROM new_main
+        ORDER BY country
+    '''
+
+    df = pd.read_sql(
+        sql,
+        conn
+    )
+
+    country_list = df['country'].astype(str).to_list()
+
+    conn.close()
+
+    return country_list
+
 
 def get_state_list():
 
@@ -96,7 +127,7 @@ def get_state_list():
 
     sql = '''
             SELECT DISTINCT state_or_province as state
-            FROM main
+            FROM new_main
             ORDER BY state
         '''
 
@@ -125,7 +156,7 @@ def get_basin_list():
 
     sql = '''
             SELECT DISTINCT basin as basin
-            FROM main
+            FROM new_main
             ORDER BY basin
         '''
 
@@ -154,7 +185,7 @@ def get_drill_for_list():
 
     sql = '''
             SELECT DISTINCT drill_for as drill_for
-            FROM main
+            FROM new_main
             ORDER BY drill_for
         '''
 
@@ -183,7 +214,7 @@ def get_location_list():
 
     sql = '''
             SELECT DISTINCT location as location
-            FROM main
+            FROM new_main
             ORDER BY location
         '''
 
@@ -212,7 +243,7 @@ def get_trajectory_list():
 
     sql = '''
             SELECT DISTINCT trajectory as trajectory
-            FROM main
+            FROM new_main
             ORDER BY trajectory
         '''
 
@@ -241,7 +272,7 @@ def get_well_depth_list():
 
     sql = '''
             SELECT DISTINCT well_depth as well_depth
-            FROM main
+            FROM new_main
             ORDER BY well_depth
         '''
 
@@ -271,9 +302,9 @@ def get_one_year_df(date):
             m.drill_for as drill_for, m.location as location, m.trajectory as trajectory, m.well_depth, 
             m.year as year, m.month as month, m.week as week, m.rig_count as rig_count, m.state_or_province as state,
             m.publish_date as date
-        FROM main AS m
+        FROM new_main AS m
         LEFT JOIN counties_and_states_master AS c ON c.county_and_state = m.county_and_state
-        WHERE publish_date >= '%s' AND publish_date <= '%s'
+        WHERE publish_date >= '%s' AND publish_date <= '%s' AND location = 'Land' AND country = 'UNITED STATES'
         ORDER BY publish_date ASC
     '''
 
@@ -331,10 +362,42 @@ def get_df(first_date, second_date):
         SELECT c.fips as fips, m.county_and_state as county, m.basin as basin,
             m.drill_for as drill_for, m.location as location, m.trajectory as trajectory, m.well_depth, 
             m.rig_count as rig_count, m.state_or_province as state, m.publish_date as date
-        FROM main AS m
+        FROM new_main AS m
         LEFT JOIN counties_and_states_master AS c ON c.county_and_state = m.county_and_state
-        WHERE publish_date >= ('%s') AND publish_date <= ('%s')
+        WHERE publish_date >= ('%s') AND publish_date <= ('%s') and m.country = 'UNITED STATES'
         ORDER BY publish_date ASC
+    '''
+
+    sql_input = (first_date, second_date)
+
+    final_sql = sql % sql_input
+
+    df = pd.read_sql(final_sql, conn)
+
+    conn.close()
+
+    convert_dict = {'date': str}
+    dff = df.astype(convert_dict)
+
+    return dff
+
+
+def get_north_america_df(first_date, second_date):
+    conn = psycopg2.connect(
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+
+    sql = '''
+        SELECT country, state_or_province as state, basin, drill_for, location, trajectory, well_depth,
+	        rig_count, publish_date as date
+        FROM new_main
+        WHERE publish_date >= ('%s') AND publish_date <= ('%s') AND 
+            country IN ('UNITED STATES', 'CANADA')
+        ORDER BY date ASC
     '''
 
     sql_input = (first_date, second_date)
@@ -363,7 +426,7 @@ def get_max_date():
 
     sql = '''
         SELECT MAX(publish_date) as max
-        FROM main
+        FROM new_main
     '''
 
     df = pd.read_sql(sql, conn)
@@ -371,6 +434,7 @@ def get_max_date():
     conn.close()
 
     return df['max'][0]
+
 
 
 def get_share_drill_for_df():
