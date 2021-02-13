@@ -49,10 +49,10 @@ app.layout = html.Div([
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/north_america':
-        return north_america.layout
-    else:
+    if pathname == '/usa_land':
         return usa_land.layout
+    else:
+        return north_america.layout
 
 
 if __name__ == '__main__':
