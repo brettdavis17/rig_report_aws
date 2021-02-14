@@ -6,7 +6,7 @@ from dash.dependencies import Input, Output, State
 
 from application import server
 from application import app
-from apps import north_america, usa_land
+from apps import north_america, usa_land, international
 
 # external_stylesheets = [
 #     dbc.themes.COSMO
@@ -25,8 +25,8 @@ navbar = dbc.NavbarSimple(
         dbc.DropdownMenu(
             children=[
                 dbc.DropdownMenuItem("North America", href="/north_america"),
-                dbc.DropdownMenuItem("USA Land", href="/usa_land")
-                # dbc.DropdownMenuItem("International", href="/international"),
+                dbc.DropdownMenuItem("USA Land", href="/usa_land"),
+                dbc.DropdownMenuItem("International", href="/international"),
             ],
             nav=True,
             in_navbar=True,
@@ -34,7 +34,7 @@ navbar = dbc.NavbarSimple(
         ),
     ],
     brand="RigCountDashboard",
-    brand_href="#",
+    brand_href="/",
     color="black",
     dark=True,
 )
@@ -51,6 +51,8 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/usa_land':
         return usa_land.layout
+    elif pathname == '/international':
+        return international.layout
     else:
         return north_america.layout
 
