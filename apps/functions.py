@@ -126,10 +126,10 @@ def get_state_list():
     c = conn.cursor()
 
     sql = '''
-            SELECT DISTINCT state_or_province as state
-            FROM new_main
-            ORDER BY state
-        '''
+        SELECT DISTINCT state_or_province as state
+        FROM new_main
+        ORDER BY state
+    '''
 
     df = pd.read_sql(
         sql,
