@@ -12,227 +12,217 @@ from dateutil.relativedelta import relativedelta
 import apps.functions as functions
 from application import app
 
-layout = html.Div('North America Page Coming Soon')
 
-# external_stylesheets = [
-#     dbc.themes.CYBORG
-# ]
-#
-# app = dash.Dash(
-#     __name__,
-#     # external_stylesheets=external_stylesheets
-# )
-# server = app.server
-#
-# app.config['suppress_callback_exceptions'] = True
-
-# app.layout = \
-
-# layout = html.Div([
-#     #header
-#     html.Div([
-#         html.H2('NORTH AMERICA RIG DASHBOARD')
-#     ], className='header', style={'color': 'black'}
-#     ),
-#     #dropdowns
-#     html.Div([
-#         html.Div([
-#             dbc.Button(
-#                 'SUBMIT',
-#                 id='na-submit-button',
-#                 style={
-#                     'backgroundColor': 'black',
-#                     'color': 'white'
-#                 }
-#             ),
-#             dcc.Dropdown(
-#                 id='na-date-dropdown',
-#                 options=[{'label': x, 'value': x} for x in functions.get_date_list()],
-#                 multi=False,
-#                 value=functions.get_date_list()[0],
-#                 placeholder='Select a date',
-#                 persistence=True
-#             ),
-#             dcc.Dropdown(
-#                 id='na-reference-dropdown',
-#                 options=[
-#                     {'label': 'Rig Count View', 'value': 'rig_count_view'},
-#                     {'label': '1 Week +/- View', 'value': '1w'},
-#                     {'label': '1 Month +/- View', 'value': '1m'},
-#                     {'label': '3 Month +/- View', 'value': '3m'},
-#                     {'label': '6 Month +/- View', 'value': '6m'},
-#                     {'label': '1 Year +/- View', 'value': '1y'},
-#                     {'label': '3 Year +/- View', 'value': '3y'},
-#                     {'label': '5 Year +/- View', 'value': '5y'}
-#                 ],
-#                 value='rig_count_view',
-#                 placeholder='Select view'
-#             ),
-#             html.Details([
-#                 html.Summary('Country'),
-#                 html.Div([
-#                     dbc.Button(
-#                         'SELECT ALL',
-#                         id='na-country-select-all',
-#                         size='sm',
-#                         style={
-#                             'backgroundColor': 'black',
-#                             'color': 'white'
-#                         }
-#                     ),
-#                     dbc.Button(
-#                         'CLEAR ALL',
-#                         id='na-country-clear-all',
-#                         size='sm',
-#                         style={
-#                             'backgroundColor': 'black',
-#                             'color': 'white'
-#                         }
-#                     ),
-#                     dcc.Checklist(
-#                         id='na-country-checklist',
-#                         options=[{'label': x, 'value': x} for x in functions.get_country_list()],
-#                         value=functions.get_country_list(),
-#                         persistence=True
-#                     )
-#                 ])
-#             ]),
-#             html.Details([
-#                 html.Summary('States'),
-#                 html.Div([
-#                     dbc.Button(
-#                         'SELECT ALL',
-#                         id='na-state-select-all',
-#                         size='sm',
-#                         style={
-#                             'backgroundColor': 'black',
-#                             'color': 'white'
-#                         }
-#                     ),
-#                     dbc.Button(
-#                         'CLEAR ALL',
-#                         id='na-state-clear-all',
-#                         size='sm',
-#                         style={
-#                             'backgroundColor': 'black',
-#                             'color': 'white'
-#                         }
-#                     ),
-#                     dcc.Checklist(
-#                         id='na-state-checklist',
-#                         options=[{'label': x, 'value': x} for x in functions.get_state_list()],
-#                         value=functions.get_state_list(),
-#                         persistence=True
-#                     )
-#                 ])
-#             ]),
-#             html.Details([
-#                 html.Summary('Basins'),
-#                 html.Div([
-#                     dbc.Button(
-#                         'SELECT ALL',
-#                         id='na-basin-select-all',
-#                         size='sm'
-#                     ),
-#                     dbc.Button(
-#                         'CLEAR ALL',
-#                         id='na-basin-clear-all',
-#                         size='sm'
-#                     ),
-#                     dcc.Checklist(
-#                         id='na-basin-checklist',
-#                         options=[{'label': x, 'value': x} for x in functions.get_basin_list()],
-#                         value=functions.get_basin_list(),
-#                         persistence=True
-#                     )
-#                 ])
-#             ]),
-#             html.Details([
-#                 html.Summary('Drill For'),
-#                 html.Div([
-#                     dbc.Button(
-#                         'SELECT ALL',
-#                         id='na-drill-for-select-all',
-#                         size='sm'
-#                     ),
-#                     dbc.Button(
-#                         'CLEAR ALL',
-#                         id='na-drill-for-clear-all',
-#                         size='sm'
-#                     ),
-#                     dcc.Checklist(
-#                         id='na-drill-for-checklist',
-#                         options=[{'label': x, 'value': x} for x in functions.get_drill_for_list()],
-#                         value=functions.get_drill_for_list(),
-#                         persistence=True
-#                     )
-#                 ])
-#             ]),
-#             html.Details([
-#                 html.Summary('Location'),
-#                 html.Div([
-#                     dbc.Button(
-#                         'SELECT ALL',
-#                         id='na-location-select-all',
-#                         size='sm'
-#                     ),
-#                     dbc.Button(
-#                         'CLEAR ALL',
-#                         id='na-location-clear-all',
-#                         size='sm'
-#                     ),
-#                     dcc.Checklist(
-#                         id='na-location-checklist',
-#                         options=[{'label': x, 'value': x} for x in functions.get_location_list()],
-#                         value=functions.get_location_list(),
-#                         persistence=True
-#                     )
-#                 ])
-#             ]),
-#             html.Details([
-#                 html.Summary('Trajectory'),
-#                 html.Div([
-#                     dbc.Button(
-#                         'SELECT ALL',
-#                         id='na-trajectory-select-all',
-#                         size='sm'
-#                     ),
-#                     dbc.Button(
-#                         'CLEAR ALL',
-#                         id='na-trajectory-clear-all',
-#                         size='sm'
-#                     ),
-#                     dcc.Checklist(
-#                         id='na-trajectory-checklist',
-#                         options=[{'label': x, 'value': x} for x in functions.get_trajectory_list()],
-#                         value=functions.get_trajectory_list(),
-#                         persistence=True
-#                     )
-#                 ])
-#             ]),
-#             html.Details([
-#                 html.Summary('Well Depth'),
-#                 html.Div([
-#                     dbc.Button(
-#                         'SELECT ALL',
-#                         id='na-well-depth-select-all',
-#                         size='sm'
-#                     ),
-#                     dbc.Button(
-#                         'CLEAR ALL',
-#                         id='na-well-depth-clear-all',
-#                         size='sm'
-#                     ),
-#                     dcc.Checklist(
-#                         id='na-well-depth-checklist',
-#                         options=[{'label': x, 'value': x} for x in functions.get_well_depth_list()],
-#                         value=functions.get_well_depth_list(),
-#                         persistence=True
-#                     )
-#                 ])
-#             ])
-#         ], className='two columns'
-#         ),
+layout = html.Div([
+    #header
+    html.Div([
+        html.H2('NORTH AMERICA RIG DASHBOARD')
+    ], className='header', style={'color': 'black'}
+    ),
+    #dropdowns
+    html.Div([
+        html.Div([
+            dbc.Button(
+                'SUBMIT',
+                id='na-submit-button',
+                style={
+                    'backgroundColor': 'black',
+                    'color': 'white'
+                }
+            ),
+            dcc.Dropdown(
+                id='na-date-dropdown',
+                options=[{'label': x, 'value': x} for x in functions.get_date_list()],
+                multi=False,
+                value=functions.get_date_list()[0],
+                placeholder='Select a date',
+                persistence=True
+            ),
+            dcc.Dropdown(
+                id='na-reference-dropdown',
+                options=[
+                    {'label': 'Rig Count View', 'value': 'rig_count_view'},
+                    {'label': '1 Week +/- View', 'value': '1w'},
+                    {'label': '1 Month +/- View', 'value': '1m'},
+                    {'label': '3 Month +/- View', 'value': '3m'},
+                    {'label': '6 Month +/- View', 'value': '6m'},
+                    {'label': '1 Year +/- View', 'value': '1y'},
+                    {'label': '3 Year +/- View', 'value': '3y'},
+                    {'label': '5 Year +/- View', 'value': '5y'}
+                ],
+                value='rig_count_view',
+                placeholder='Select view'
+            ),
+            html.Details([
+                html.Summary('Country'),
+                html.Div([
+                    dbc.Button(
+                        'SELECT ALL',
+                        id='na-country-select-all',
+                        size='sm',
+                        style={
+                            'backgroundColor': 'black',
+                            'color': 'white'
+                        }
+                    ),
+                    dbc.Button(
+                        'CLEAR ALL',
+                        id='na-country-clear-all',
+                        size='sm',
+                        style={
+                            'backgroundColor': 'black',
+                            'color': 'white'
+                        }
+                    ),
+                    dcc.Checklist(
+                        id='na-country-checklist',
+                        options=[{'label': x, 'value': x} for x in functions.get_country_list()],
+                        value=functions.get_country_list(),
+                        persistence=True
+                    )
+                ])
+            ]),
+            html.Details([
+                html.Summary('States'),
+                html.Div([
+                    dbc.Button(
+                        'SELECT ALL',
+                        id='na-state-select-all',
+                        size='sm',
+                        style={
+                            'backgroundColor': 'black',
+                            'color': 'white'
+                        }
+                    ),
+                    dbc.Button(
+                        'CLEAR ALL',
+                        id='na-state-clear-all',
+                        size='sm',
+                        style={
+                            'backgroundColor': 'black',
+                            'color': 'white'
+                        }
+                    ),
+                    dcc.Checklist(
+                        id='na-state-checklist',
+                        options=[{'label': x, 'value': x} for x in functions.get_state_list()],
+                        value=functions.get_state_list(),
+                        persistence=True
+                    )
+                ])
+            ]),
+            html.Details([
+                html.Summary('Basins'),
+                html.Div([
+                    dbc.Button(
+                        'SELECT ALL',
+                        id='na-basin-select-all',
+                        size='sm'
+                    ),
+                    dbc.Button(
+                        'CLEAR ALL',
+                        id='na-basin-clear-all',
+                        size='sm'
+                    ),
+                    dcc.Checklist(
+                        id='na-basin-checklist',
+                        options=[{'label': x, 'value': x} for x in functions.get_basin_list()],
+                        value=functions.get_basin_list(),
+                        persistence=True
+                    )
+                ])
+            ]),
+            html.Details([
+                html.Summary('Drill For'),
+                html.Div([
+                    dbc.Button(
+                        'SELECT ALL',
+                        id='na-drill-for-select-all',
+                        size='sm'
+                    ),
+                    dbc.Button(
+                        'CLEAR ALL',
+                        id='na-drill-for-clear-all',
+                        size='sm'
+                    ),
+                    dcc.Checklist(
+                        id='na-drill-for-checklist',
+                        options=[{'label': x, 'value': x} for x in functions.get_drill_for_list()],
+                        value=functions.get_drill_for_list(),
+                        persistence=True
+                    )
+                ])
+            ]),
+            html.Details([
+                html.Summary('Location'),
+                html.Div([
+                    dbc.Button(
+                        'SELECT ALL',
+                        id='na-location-select-all',
+                        size='sm'
+                    ),
+                    dbc.Button(
+                        'CLEAR ALL',
+                        id='na-location-clear-all',
+                        size='sm'
+                    ),
+                    dcc.Checklist(
+                        id='na-location-checklist',
+                        options=[{'label': x, 'value': x} for x in functions.get_location_list()],
+                        value=functions.get_location_list(),
+                        persistence=True
+                    )
+                ])
+            ]),
+            html.Details([
+                html.Summary('Trajectory'),
+                html.Div([
+                    dbc.Button(
+                        'SELECT ALL',
+                        id='na-trajectory-select-all',
+                        size='sm'
+                    ),
+                    dbc.Button(
+                        'CLEAR ALL',
+                        id='na-trajectory-clear-all',
+                        size='sm'
+                    ),
+                    dcc.Checklist(
+                        id='na-trajectory-checklist',
+                        options=[{'label': x, 'value': x} for x in functions.get_trajectory_list()],
+                        value=functions.get_trajectory_list(),
+                        persistence=True
+                    )
+                ])
+            ]),
+            html.Details([
+                html.Summary('Well Depth'),
+                html.Div([
+                    dbc.Button(
+                        'SELECT ALL',
+                        id='na-well-depth-select-all',
+                        size='sm'
+                    ),
+                    dbc.Button(
+                        'CLEAR ALL',
+                        id='na-well-depth-clear-all',
+                        size='sm'
+                    ),
+                    dcc.Checklist(
+                        id='na-well-depth-checklist',
+                        options=[{'label': x, 'value': x} for x in functions.get_well_depth_list()],
+                        value=functions.get_well_depth_list(),
+                        persistence=True
+                    )
+                ])
+            ])
+        ], className='two columns'
+        )
+        ###,###
+    ])
+    ### get rid of this after test ###
+])
+### get rid of this after test ###
 #         html.Div([
 #             html.Div([
 #                 html.Div([
