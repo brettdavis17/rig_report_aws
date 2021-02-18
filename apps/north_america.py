@@ -650,9 +650,7 @@ def return_well_depth_checklist(select_all, clear_all):
         )
     ]
 )
-def return_references(
-    click, date, dropdown_value, countries, states, basins, drill_for, locations, trajectories, well_depths
-):
+def return_references(click, date, dropdown_value, countries, states, basins, drill_for, locations, trajectories, well_depths):
     date_list = functions.get_date_list_asc()  # list of all unique dates
 
     one_week_date = date_list[date_list.index(date) - 1]  # date 1 week before selected date
@@ -3241,453 +3239,6 @@ def return_references(
             location_fig, state_table_columns, state_table_data, country_table_columns, country_table_data, \
 
 
-    elif dropdown_value == '5y':
-        reference_date = five_year_date
-        scatter_reference_date = reference_date
-
-        df = functions.get_north_america_df(scatter_reference_date, date)
-
-        share_df = functions.get_df(reference_date, date)
-
-        filtered_df = df[
-            df['country'].isin(countries) &
-            df['state'].isin(states) &
-            df['basin'].isin(basins) &
-            df['drill_for'].isin(drill_for) &
-            df['location'].isin(locations) &
-            df['trajectory'].isin(trajectories) &
-            df['well_depth'].isin(well_depths)
-        ]
-
-        filtered_share_df = share_df[
-            share_df['state'].isin(states) &
-            share_df['basin'].isin(basins) &
-            share_df['drill_for'].isin(drill_for) &
-            share_df['location'].isin(locations) &
-            share_df['trajectory'].isin(trajectories) &
-            share_df['well_depth'].isin(well_depths)
-        ]
-
-        current_df = filtered_df[filtered_df['date'] == date]
-        reference_df = filtered_df[filtered_df['date'] == reference_date]
-
-        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
-
-        # county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
-
-
-        indicator_data = [
-            go.Indicator(
-                mode='number+delta',
-                value=current_df['rig_count'].sum(),
-                delta={'reference': reference_df['rig_count'].sum()},
-            ),
-            go.Scatter(
-                name='5-YEAR TREND',
-                x=scatter_df['date'].tolist(),
-                y=scatter_df['rig_count'].tolist()
-            )
-        ]
-
-        indicator_layout = go.Layout(
-            # title='COGS',
-            # height=100,
-            title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
-            titlefont={
-                'size': 8
-            },
-            template="plotly_dark",
-            xaxis={
-                'showgrid': False,
-                'showticklabels': False
-            },
-            yaxis={
-                'showgrid': False,
-                'showticklabels': False
-            },
-            margin={
-                't': 20,
-                'r': 0,
-                'b': 0,
-                'l': 0
-            },
-            height=177
-        )
-
-        indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
-
-
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
-
-        states = json.load(s)
-        provinces = json.load(p)
-
-        states_and_provinces = {"type": "FeatureCollection", "features": states['features'] + provinces['features']}
-
-        for feature in states_and_provinces['features']:
-            feature['id'] = feature['properties']['name'].upper()
-
-        selected_week_df_raw = current_df[[
-            'state', 'rig_count'
-        ]].groupby(['state']).sum().reset_index()
-
-        selected_week_df = selected_week_df_raw.rename(columns={'rig_count': 'rig_count_select'})
-
-        ref_week_df_raw = reference_df[[
-            'state', 'rig_count'
-        ]].groupby(['state']).sum().reset_index()
-
-        ref_week_df = ref_week_df_raw.rename(columns={'rig_count': 'rig_count_ref'})
-
-        map_df = selected_week_df.merge(ref_week_df, 'outer', ['state'])
-
-        map_df['rig_count_ref'] = map_df['rig_count_ref'].fillna(0)
-        map_df['rig_count_select'] = map_df['rig_count_select'].fillna(0)
-
-        map_df['rig_count_ref'] = map_df['rig_count_ref'].astype(int)
-        map_df['rig_count_select'] = map_df['rig_count_select'].astype(int)
-
-        map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
-
-        # map_df = current_df[[
-        #     'state', 'rig_count'
-        # ]].groupby(['state']).sum().reset_index()
-
-        map_data = go.Choropleth(
-            name='States & Provinces',
-            geojson=states_and_provinces,
-            locations=map_df['state'],
-            z=map_df['difference'],
-            zmid=0,
-            colorscale=plus_minus_colorscale,
-            hovertemplate=map_df['state'] + '<br>Rig +/-: %{z}<br>Rig Count: ' + map_df['rig_count_select'].astype(str)
-        )
-
-        map_layout = go.Layout(
-            geo={
-                'scope': 'north america',
-                'showlakes': True,
-                'fitbounds': 'locations'
-            },
-            title_text='STATE/PROVINCE-LEVEL 3-YEAR +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
-            titlefont={
-                'size': 8
-            },
-            margin={
-                'r': 0,
-                't': 20,
-                'l': 0,
-                'b': 0
-            },
-            template="plotly_dark",
-            height=500
-        )
-
-        map_fig = go.Figure(data=map_data, layout=map_layout)
-
-        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
-        totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
-
-        drill_for_df = filtered_share_df[[
-            'date',
-            'drill_for',
-            'rig_count'
-        ]].groupby([
-            'date',
-            'drill_for'
-        ]).sum().reset_index()
-
-        drill_for_totals_df = drill_for_df.merge(totals_df, how='left', on='date')
-
-        drill_for_totals_df['share'] = (
-                    (drill_for_totals_df['rig_count']) / (drill_for_totals_df['overall_weekly_total']))
-
-        drill_for_data = [
-            go.Scatter(
-                name=i[:4],
-                x=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['date'],
-                y=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['share'],
-                hovertemplate='%{x}<br>' + i + '<br>%{y}'
-            ) for i in drill_for_totals_df['drill_for'].unique()
-        ]
-
-        drill_for_layout = go.Layout(
-            title_text='5Y DRILL-FOR HISTORY',
-            titlefont={
-                'size': 8
-            },
-            template="plotly_dark",
-            xaxis={
-                'showgrid': False,
-                'showticklabels': False
-            },
-            yaxis={
-                'showgrid': False,
-                'showticklabels': True,
-                'tickformat': ',.0%',
-                'tickfont': {
-                    'size': 8
-                }
-            },
-            margin={
-                't': 20,
-                'r': 0,
-                'b': 0,
-                'l': 0
-            },
-            showlegend=False,
-        )
-
-        drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
-
-        well_depth_df = filtered_share_df[[
-            'date',
-            'well_depth',
-            'rig_count'
-        ]].groupby([
-            'date',
-            'well_depth'
-        ]).sum().reset_index()
-
-        well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
-
-        well_depth_totals_df['share'] = (
-                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
-        )
-
-        well_depth_data = [
-            go.Scatter(
-                name=i[:4],
-                x=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['date'],
-                y=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['share'],
-                hovertemplate='%{x}<br>' + i + '<br>%{y}'
-            ) for i in well_depth_totals_df['well_depth'].unique()
-        ]
-
-        well_depth_layout = go.Layout(
-            title_text='5Y WELL-DEPTH HISTORY',
-            titlefont={
-                'size': 8
-            },
-            template="plotly_dark",
-            xaxis={
-                'showgrid': False,
-                'showticklabels': False
-            },
-            yaxis={
-                'showgrid': False,
-                'showticklabels': True,
-                'tickformat': ',.0%',
-                'tickfont': {
-                    'size': 8
-                }
-            },
-            margin={
-                't': 20,
-                'r': 0,
-                'b': 0,
-                'l': 0
-            },
-            showlegend=False,
-        )
-
-        well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
-
-        trajectory_df = filtered_share_df[[
-            'date',
-            'trajectory',
-            'rig_count'
-        ]].groupby([
-            'date',
-            'trajectory'
-        ]).sum().reset_index()
-
-        trajectory_totals_df = trajectory_df.merge(totals_df, how='left', on='date')
-
-        trajectory_totals_df['share'] = (
-                (trajectory_totals_df['rig_count']) / (trajectory_totals_df['overall_weekly_total']))
-
-        trajectory_data = [
-            go.Scatter(
-                name=i[:4],
-                x=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['date'],
-                y=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['share'],
-                hovertemplate='%{x}<br>' + i + '<br>%{y}'
-            ) for i in trajectory_totals_df['trajectory'].unique()
-        ]
-
-        trajectory_layout = go.Layout(
-            title_text='5Y TRAJECTORY HISTORY',
-            titlefont={
-                'size': 8
-            },
-            template="plotly_dark",
-            xaxis={
-                'showgrid': False,
-                'showticklabels': False
-            },
-            yaxis={
-                'showgrid': False,
-                'showticklabels': True,
-                'tickformat': ',.0%',
-                'tickfont': {
-                    'size': 8
-                }
-            },
-            margin={
-                't': 20,
-                'r': 0,
-                'b': 0,
-                'l': 0
-            },
-            showlegend=False,
-        )
-
-        trajectory_fig = go.Figure(data=trajectory_data, layout=trajectory_layout)
-
-        location_df = filtered_share_df[[
-            'date',
-            'location',
-            'rig_count'
-        ]].groupby([
-            'date',
-            'location'
-        ]).sum().reset_index()
-
-        location_totals_df = location_df.merge(totals_df, how='left', on='date')
-
-        location_totals_df['share'] = (
-                (location_totals_df['rig_count']) / (location_totals_df['overall_weekly_total']))
-
-        location_data = [
-            go.Scatter(
-                name=i[:4],
-                x=location_totals_df[location_totals_df['location'] == i]['date'],
-                y=location_totals_df[location_totals_df['location'] == i]['share'],
-                hovertemplate='%{x}<br>' + i + '<br>%{y}'
-            ) for i in location_totals_df['location'].unique()
-        ]
-
-        location_layout = go.Layout(
-            title_text='5Y LOCATION HISTORY',
-            titlefont={
-                'size': 8
-            },
-            template="plotly_dark",
-            xaxis={
-                'showgrid': False,
-                'showticklabels': False
-            },
-            yaxis={
-                'showgrid': False,
-                'showticklabels': True,
-                'tickformat': ',.0%',
-                'tickfont': {
-                    'size': 8
-                }
-            },
-            margin={
-                't': 20,
-                'r': 0,
-                'b': 0,
-                'l': 0
-            },
-            showlegend=False,
-        )
-
-        location_fig = go.Figure(data=location_data, layout=location_layout)
-
-
-        state_table_df_raw = current_df[[
-            'state', 'rig_count'
-        ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
-
-        state_table_df_ref_raw = reference_df[[
-            'state', 'rig_count'
-        ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_before'})
-
-        state_table_df = state_table_df_raw.merge(
-            state_table_df_ref_raw,
-            'outer',
-            ['state']
-        )
-
-        state_table_df['rig_count_after'] = state_table_df['rig_count_after'].fillna(0)
-        state_table_df['rig_count_before'] = state_table_df['rig_count_before'].fillna(0)
-
-        state_table_df['rig_count_after'] = state_table_df['rig_count_after'].astype(int)
-        state_table_df['rig_count_before'] = state_table_df['rig_count_before'].astype(int)
-
-        state_table_df['difference'] = state_table_df['rig_count_after'] - state_table_df['rig_count_before']
-
-        state_table_df['rank'] = state_table_df['difference'].rank(method='min', ascending=False)
-
-        state_table_df_sort = state_table_df.sort_values(
-            by=['difference', 'rig_count_after'],
-            ascending=[False, False]
-        )
-
-        state_final_table_df = pd.DataFrame({
-            'RANK': [int(x) for x in state_table_df_sort['rank'].tolist()],
-            'STATE/PROVINCE': state_table_df_sort['state'].tolist(),
-            'RIGS': state_table_df_sort['rig_count_after'].tolist(),
-            '+/-': state_table_df_sort['difference'].tolist()
-        })
-
-        state_table_columns = [{
-            'name': i, 'id': i
-        } for i in state_final_table_df.columns]
-
-        state_table_data = state_final_table_df.to_dict('records')
-
-        country_table_df_raw = current_df[[
-            'country', 'rig_count'
-        ]].groupby(['country']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
-
-        country_table_df_ref_raw = reference_df[[
-            'country', 'rig_count'
-        ]].groupby(['country']).sum().reset_index().rename(columns={'rig_count': 'rig_count_before'})
-
-        country_table_df = country_table_df_raw.merge(
-            country_table_df_ref_raw,
-            'outer',
-            ['country']
-        )
-
-        country_table_df['rig_count_after'] = country_table_df['rig_count_after'].fillna(0)
-        country_table_df['rig_count_before'] = country_table_df['rig_count_before'].fillna(0)
-
-        country_table_df['rig_count_after'] = country_table_df['rig_count_after'].astype(int)
-        country_table_df['rig_count_before'] = country_table_df['rig_count_before'].astype(int)
-
-        country_table_df['difference'] = country_table_df['rig_count_after'] - country_table_df['rig_count_before']
-
-        country_table_df['rank'] = country_table_df['difference'].rank(method='min', ascending=False)
-
-        country_table_df_sort = country_table_df.sort_values(
-            by=['difference', 'rig_count_after'],
-            ascending=[False, False]
-        )
-
-        country_final_table_df = pd.DataFrame({
-            'RANK': [int(x) for x in country_table_df_sort['rank'].tolist()],
-            'COUNTRY': country_table_df_sort['country'].tolist(),
-            'RIGS': country_table_df_sort['rig_count_after'].tolist(),
-            '+/-': country_table_df_sort['difference'].tolist()
-        })
-
-        country_table_columns = [{
-            'name': i, 'id': i
-        } for i in country_final_table_df.columns]
-
-        country_table_data = country_final_table_df.to_dict('records')
-
-
-        return indicator_fig, map_fig, drill_for_fig, well_depth_fig, trajectory_fig, \
-            location_fig, state_table_columns, state_table_data, country_table_columns, country_table_data, \
-
-
     elif dropdown_value == '3y':
         reference_date = three_year_date
         scatter_reference_date = reference_date
@@ -4018,6 +3569,452 @@ def return_references(
 
         location_layout = go.Layout(
             title_text='3Y LOCATION HISTORY',
+            titlefont={
+                'size': 8
+            },
+            template="plotly_dark",
+            xaxis={
+                'showgrid': False,
+                'showticklabels': False
+            },
+            yaxis={
+                'showgrid': False,
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
+            },
+            margin={
+                't': 20,
+                'r': 0,
+                'b': 0,
+                'l': 0
+            },
+            showlegend=False,
+        )
+
+        location_fig = go.Figure(data=location_data, layout=location_layout)
+
+
+        state_table_df_raw = current_df[[
+            'state', 'rig_count'
+        ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
+
+        state_table_df_ref_raw = reference_df[[
+            'state', 'rig_count'
+        ]].groupby(['state']).sum().reset_index().rename(columns={'rig_count': 'rig_count_before'})
+
+        state_table_df = state_table_df_raw.merge(
+            state_table_df_ref_raw,
+            'outer',
+            ['state']
+        )
+
+        state_table_df['rig_count_after'] = state_table_df['rig_count_after'].fillna(0)
+        state_table_df['rig_count_before'] = state_table_df['rig_count_before'].fillna(0)
+
+        state_table_df['rig_count_after'] = state_table_df['rig_count_after'].astype(int)
+        state_table_df['rig_count_before'] = state_table_df['rig_count_before'].astype(int)
+
+        state_table_df['difference'] = state_table_df['rig_count_after'] - state_table_df['rig_count_before']
+
+        state_table_df['rank'] = state_table_df['difference'].rank(method='min', ascending=False)
+
+        state_table_df_sort = state_table_df.sort_values(
+            by=['difference', 'rig_count_after'],
+            ascending=[False, False]
+        )
+
+        state_final_table_df = pd.DataFrame({
+            'RANK': [int(x) for x in state_table_df_sort['rank'].tolist()],
+            'STATE/PROVINCE': state_table_df_sort['state'].tolist(),
+            'RIGS': state_table_df_sort['rig_count_after'].tolist(),
+            '+/-': state_table_df_sort['difference'].tolist()
+        })
+
+        state_table_columns = [{
+            'name': i, 'id': i
+        } for i in state_final_table_df.columns]
+
+        state_table_data = state_final_table_df.to_dict('records')
+
+        country_table_df_raw = current_df[[
+            'country', 'rig_count'
+        ]].groupby(['country']).sum().reset_index().rename(columns={'rig_count': 'rig_count_after'})
+
+        country_table_df_ref_raw = reference_df[[
+            'country', 'rig_count'
+        ]].groupby(['country']).sum().reset_index().rename(columns={'rig_count': 'rig_count_before'})
+
+        country_table_df = country_table_df_raw.merge(
+            country_table_df_ref_raw,
+            'outer',
+            ['country']
+        )
+
+        country_table_df['rig_count_after'] = country_table_df['rig_count_after'].fillna(0)
+        country_table_df['rig_count_before'] = country_table_df['rig_count_before'].fillna(0)
+
+        country_table_df['rig_count_after'] = country_table_df['rig_count_after'].astype(int)
+        country_table_df['rig_count_before'] = country_table_df['rig_count_before'].astype(int)
+
+        country_table_df['difference'] = country_table_df['rig_count_after'] - country_table_df['rig_count_before']
+
+        country_table_df['rank'] = country_table_df['difference'].rank(method='min', ascending=False)
+
+        country_table_df_sort = country_table_df.sort_values(
+            by=['difference', 'rig_count_after'],
+            ascending=[False, False]
+        )
+
+        country_final_table_df = pd.DataFrame({
+            'RANK': [int(x) for x in country_table_df_sort['rank'].tolist()],
+            'COUNTRY': country_table_df_sort['country'].tolist(),
+            'RIGS': country_table_df_sort['rig_count_after'].tolist(),
+            '+/-': country_table_df_sort['difference'].tolist()
+        })
+
+        country_table_columns = [{
+            'name': i, 'id': i
+        } for i in country_final_table_df.columns]
+
+        country_table_data = country_final_table_df.to_dict('records')
+
+
+        return indicator_fig, map_fig, drill_for_fig, well_depth_fig, trajectory_fig, \
+            location_fig, state_table_columns, state_table_data, country_table_columns, country_table_data, \
+
+    else:
+        reference_date = five_year_date
+        scatter_reference_date = reference_date
+
+        df = functions.get_north_america_df(scatter_reference_date, date)
+
+        share_df = functions.get_df(reference_date, date)
+
+        filtered_df = df[
+            df['country'].isin(countries) &
+            df['state'].isin(states) &
+            df['basin'].isin(basins) &
+            df['drill_for'].isin(drill_for) &
+            df['location'].isin(locations) &
+            df['trajectory'].isin(trajectories) &
+            df['well_depth'].isin(well_depths)
+        ]
+
+        filtered_share_df = share_df[
+            share_df['state'].isin(states) &
+            share_df['basin'].isin(basins) &
+            share_df['drill_for'].isin(drill_for) &
+            share_df['location'].isin(locations) &
+            share_df['trajectory'].isin(trajectories) &
+            share_df['well_depth'].isin(well_depths)
+        ]
+
+        current_df = filtered_df[filtered_df['date'] == date]
+        reference_df = filtered_df[filtered_df['date'] == reference_date]
+
+        scatter_df = filtered_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+
+        # county_scatter_df = filtered_df[['date', 'county']].groupby(['date'])['county'].nunique().reset_index()
+
+
+        indicator_data = [
+            go.Indicator(
+                mode='number+delta',
+                value=current_df['rig_count'].sum(),
+                delta={'reference': reference_df['rig_count'].sum()},
+            ),
+            go.Scatter(
+                name='5-YEAR TREND',
+                x=scatter_df['date'].tolist(),
+                y=scatter_df['rig_count'].tolist()
+            )
+        ]
+
+        indicator_layout = go.Layout(
+            # title='COGS',
+            # height=100,
+            title_text='RIG COUNT AND TRENDS FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            titlefont={
+                'size': 8
+            },
+            template="plotly_dark",
+            xaxis={
+                'showgrid': False,
+                'showticklabels': False
+            },
+            yaxis={
+                'showgrid': False,
+                'showticklabels': False
+            },
+            margin={
+                't': 20,
+                'r': 0,
+                'b': 0,
+                'l': 0
+            },
+            height=177
+        )
+
+        indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
+
+
+        s = open('/Users/brettdavis/Downloads/us_states.json')
+        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+
+        states = json.load(s)
+        provinces = json.load(p)
+
+        states_and_provinces = {"type": "FeatureCollection", "features": states['features'] + provinces['features']}
+
+        for feature in states_and_provinces['features']:
+            feature['id'] = feature['properties']['name'].upper()
+
+        selected_week_df_raw = current_df[[
+            'state', 'rig_count'
+        ]].groupby(['state']).sum().reset_index()
+
+        selected_week_df = selected_week_df_raw.rename(columns={'rig_count': 'rig_count_select'})
+
+        ref_week_df_raw = reference_df[[
+            'state', 'rig_count'
+        ]].groupby(['state']).sum().reset_index()
+
+        ref_week_df = ref_week_df_raw.rename(columns={'rig_count': 'rig_count_ref'})
+
+        map_df = selected_week_df.merge(ref_week_df, 'outer', ['state'])
+
+        map_df['rig_count_ref'] = map_df['rig_count_ref'].fillna(0)
+        map_df['rig_count_select'] = map_df['rig_count_select'].fillna(0)
+
+        map_df['rig_count_ref'] = map_df['rig_count_ref'].astype(int)
+        map_df['rig_count_select'] = map_df['rig_count_select'].astype(int)
+
+        map_df['difference'] = map_df['rig_count_select'] - map_df['rig_count_ref']
+
+        # map_df = current_df[[
+        #     'state', 'rig_count'
+        # ]].groupby(['state']).sum().reset_index()
+
+        map_data = go.Choropleth(
+            name='States & Provinces',
+            geojson=states_and_provinces,
+            locations=map_df['state'],
+            z=map_df['difference'],
+            zmid=0,
+            colorscale=plus_minus_colorscale,
+            hovertemplate=map_df['state'] + '<br>Rig +/-: %{z}<br>Rig Count: ' + map_df['rig_count_select'].astype(str)
+        )
+
+        map_layout = go.Layout(
+            geo={
+                'scope': 'north america',
+                'showlakes': True,
+                'fitbounds': 'locations'
+            },
+            title_text='STATE/PROVINCE-LEVEL 3-YEAR +/- HEAT MAP FOR ' + date[5:7] + '-' + date[8:] + '-' + date[:4],
+            titlefont={
+                'size': 8
+            },
+            margin={
+                'r': 0,
+                't': 20,
+                'l': 0,
+                'b': 0
+            },
+            template="plotly_dark",
+            height=500
+        )
+
+        map_fig = go.Figure(data=map_data, layout=map_layout)
+
+        totals_df_raw = filtered_share_df[['date', 'rig_count']].groupby('date').sum().reset_index()
+        totals_df = totals_df_raw.rename(columns={'rig_count': 'overall_weekly_total'})
+
+        drill_for_df = filtered_share_df[[
+            'date',
+            'drill_for',
+            'rig_count'
+        ]].groupby([
+            'date',
+            'drill_for'
+        ]).sum().reset_index()
+
+        drill_for_totals_df = drill_for_df.merge(totals_df, how='left', on='date')
+
+        drill_for_totals_df['share'] = (
+                    (drill_for_totals_df['rig_count']) / (drill_for_totals_df['overall_weekly_total']))
+
+        drill_for_data = [
+            go.Scatter(
+                name=i[:4],
+                x=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['date'],
+                y=drill_for_totals_df[drill_for_totals_df['drill_for'] == i]['share'],
+                hovertemplate='%{x}<br>' + i + '<br>%{y}'
+            ) for i in drill_for_totals_df['drill_for'].unique()
+        ]
+
+        drill_for_layout = go.Layout(
+            title_text='5Y DRILL-FOR HISTORY',
+            titlefont={
+                'size': 8
+            },
+            template="plotly_dark",
+            xaxis={
+                'showgrid': False,
+                'showticklabels': False
+            },
+            yaxis={
+                'showgrid': False,
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
+            },
+            margin={
+                't': 20,
+                'r': 0,
+                'b': 0,
+                'l': 0
+            },
+            showlegend=False,
+        )
+
+        drill_for_fig = go.Figure(data=drill_for_data, layout=drill_for_layout)
+
+        well_depth_df = filtered_share_df[[
+            'date',
+            'well_depth',
+            'rig_count'
+        ]].groupby([
+            'date',
+            'well_depth'
+        ]).sum().reset_index()
+
+        well_depth_totals_df = well_depth_df.merge(totals_df, how='left', on='date')
+
+        well_depth_totals_df['share'] = (
+                (well_depth_totals_df['rig_count']) / (well_depth_totals_df['overall_weekly_total'])
+        )
+
+        well_depth_data = [
+            go.Scatter(
+                name=i[:4],
+                x=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['date'],
+                y=well_depth_totals_df[well_depth_totals_df['well_depth'] == i]['share'],
+                hovertemplate='%{x}<br>' + i + '<br>%{y}'
+            ) for i in well_depth_totals_df['well_depth'].unique()
+        ]
+
+        well_depth_layout = go.Layout(
+            title_text='5Y WELL-DEPTH HISTORY',
+            titlefont={
+                'size': 8
+            },
+            template="plotly_dark",
+            xaxis={
+                'showgrid': False,
+                'showticklabels': False
+            },
+            yaxis={
+                'showgrid': False,
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
+            },
+            margin={
+                't': 20,
+                'r': 0,
+                'b': 0,
+                'l': 0
+            },
+            showlegend=False,
+        )
+
+        well_depth_fig = go.Figure(data=well_depth_data, layout=well_depth_layout)
+
+        trajectory_df = filtered_share_df[[
+            'date',
+            'trajectory',
+            'rig_count'
+        ]].groupby([
+            'date',
+            'trajectory'
+        ]).sum().reset_index()
+
+        trajectory_totals_df = trajectory_df.merge(totals_df, how='left', on='date')
+
+        trajectory_totals_df['share'] = (
+                (trajectory_totals_df['rig_count']) / (trajectory_totals_df['overall_weekly_total']))
+
+        trajectory_data = [
+            go.Scatter(
+                name=i[:4],
+                x=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['date'],
+                y=trajectory_totals_df[trajectory_totals_df['trajectory'] == i]['share'],
+                hovertemplate='%{x}<br>' + i + '<br>%{y}'
+            ) for i in trajectory_totals_df['trajectory'].unique()
+        ]
+
+        trajectory_layout = go.Layout(
+            title_text='5Y TRAJECTORY HISTORY',
+            titlefont={
+                'size': 8
+            },
+            template="plotly_dark",
+            xaxis={
+                'showgrid': False,
+                'showticklabels': False
+            },
+            yaxis={
+                'showgrid': False,
+                'showticklabels': True,
+                'tickformat': ',.0%',
+                'tickfont': {
+                    'size': 8
+                }
+            },
+            margin={
+                't': 20,
+                'r': 0,
+                'b': 0,
+                'l': 0
+            },
+            showlegend=False,
+        )
+
+        trajectory_fig = go.Figure(data=trajectory_data, layout=trajectory_layout)
+
+        location_df = filtered_share_df[[
+            'date',
+            'location',
+            'rig_count'
+        ]].groupby([
+            'date',
+            'location'
+        ]).sum().reset_index()
+
+        location_totals_df = location_df.merge(totals_df, how='left', on='date')
+
+        location_totals_df['share'] = (
+                (location_totals_df['rig_count']) / (location_totals_df['overall_weekly_total']))
+
+        location_data = [
+            go.Scatter(
+                name=i[:4],
+                x=location_totals_df[location_totals_df['location'] == i]['date'],
+                y=location_totals_df[location_totals_df['location'] == i]['share'],
+                hovertemplate='%{x}<br>' + i + '<br>%{y}'
+            ) for i in location_totals_df['location'].unique()
+        ]
+
+        location_layout = go.Layout(
+            title_text='5Y LOCATION HISTORY',
             titlefont={
                 'size': 8
             },
