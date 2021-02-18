@@ -651,7 +651,7 @@ def return_well_depth_checklist(select_all, clear_all):
     ]
 )
 def return_references(
-        click, date, dropdown_value, countries, states, basins, drill_for, locations, trajectories, well_depths
+    click, date, dropdown_value, countries, states, basins, drill_for, locations, trajectories, well_depths
 ):
     date_list = functions.get_date_list_asc()  # list of all unique dates
 
