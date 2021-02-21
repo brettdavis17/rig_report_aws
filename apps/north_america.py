@@ -777,7 +777,9 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
             height=500
         )
 
-        map_fig = go.Figure(data=map_data, layout=map_layout)
+        # map_fig = go.Figure(data=map_data, layout=map_layout)
+
+        map_fig = indicator_fig
 
         drill_for_df = current_df[[
             'drill_for',
