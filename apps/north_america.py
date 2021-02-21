@@ -668,6 +668,14 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
         '#009933', '#00802b', '#006622'
     ]
 
+    # s = open('/Users/brettdavis/Downloads/us_states.json')
+    # p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+    #
+    # states = json.load(s)
+    # provinces = json.load(p)
+    #
+    # states_and_provinces = {"type": "FeatureCollection", "features": states['features'] + provinces['features']}
+
     if dropdown_value == 'rig_count_view':
         reference_date = one_week_date
         scatter_reference_date = one_year_date
@@ -733,8 +741,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
         indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
 
 
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+        s = open('data/us_states.json')
+        p = open('data/canada_provinces.json')
 
         states = json.load(s)
         provinces = json.load(p)
@@ -777,9 +785,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
             height=500
         )
 
-        # map_fig = go.Figure(data=map_data, layout=map_layout)
+        map_fig = go.Figure(data=map_data, layout=map_layout)
 
-        map_fig = indicator_fig
 
         drill_for_df = current_df[[
             'drill_for',
@@ -1081,9 +1088,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
 
         indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
 
-
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+        s = open('data/us_states.json')
+        p = open('data/canada_provinces.json')
 
         states = json.load(s)
         provinces = json.load(p)
@@ -1528,9 +1534,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
 
         indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
 
-
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+        s = open('data/us_states.json')
+        p = open('data/canada_provinces.json')
 
         states = json.load(s)
         provinces = json.load(p)
@@ -1975,9 +1980,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
 
         indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
 
-
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+        s = open('data/us_states.json')
+        p = open('data/canada_provinces.json')
 
         states = json.load(s)
         provinces = json.load(p)
@@ -2421,9 +2425,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
 
         indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
 
-
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+        s = open('data/us_states.json')
+        p = open('data/canada_provinces.json')
 
         states = json.load(s)
         provinces = json.load(p)
@@ -2868,9 +2871,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
 
         indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
 
-
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+        s = open('data/us_states.json')
+        p = open('data/canada_provinces.json')
 
         states = json.load(s)
         provinces = json.load(p)
@@ -3315,9 +3317,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
 
         indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
 
-
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+        s = open('data/us_states.json')
+        p = open('data/canada_provinces.json')
 
         states = json.load(s)
         provinces = json.load(p)
@@ -3761,9 +3762,8 @@ def return_references(click, date, dropdown_value, countries, states, basins, dr
 
         indicator_fig = go.Figure(data=indicator_data, layout=indicator_layout)
 
-
-        s = open('/Users/brettdavis/Downloads/us_states.json')
-        p = open('/Users/brettdavis/Downloads/canada_provinces.json')
+        s = open('data/us_states.json')
+        p = open('data/canada_provinces.json')
 
         states = json.load(s)
         provinces = json.load(p)
