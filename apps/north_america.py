@@ -13,7 +13,7 @@ import apps.functions as functions
 from application import app
 
 
-layout = html.Div([
+page_layout = html.Div([
     #header
     html.Div([
         html.H2('NORTH AMERICA RIG DASHBOARD')
@@ -383,7 +383,6 @@ layout = html.Div([
     # convert_dict = {'date': str}
     # master_df = functions.get_overall_master_df().astype(convert_dict)
 
-# layout = serve_layout
 
 @app.callback(
     Output(

@@ -26,7 +26,7 @@ from application import app
 
 # app.layout = \
 
-layout = html.Div([
+page_layout = html.Div([
     #header
     html.Div([
         html.H2('USA LAND RIG DASHBOARD')
@@ -417,7 +417,6 @@ layout = html.Div([
     # convert_dict = {'date': str}
     # master_df = functions.get_overall_master_df().astype(convert_dict)
 
-# layout = serve_layout
 
 # convert_dict = {'date': str}
 # master_df = functions.get_overall_master_df().astype(convert_dict)

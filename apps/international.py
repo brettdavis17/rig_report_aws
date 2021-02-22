@@ -26,4 +26,4 @@ from application import app
 
 # app.layout = \
 
-layout = html.Div('International Page Coming Soon')
+page_layout = html.Div('International Page Coming Soon')

@@ -20,6 +20,8 @@ from apps import north_america, usa_land, international
 #
 # app.config['suppress_callback_exceptions'] = True
 
+location = dcc.Location(id='url', refresh=False)
+
 navbar = dbc.NavbarSimple(
     children=[
         dbc.DropdownMenu(
@@ -39,22 +41,26 @@ navbar = dbc.NavbarSimple(
     dark=True,
 )
 
+body = html.Div(id='page-content')
 
-app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    navbar,
-    html.Div(id='page-content')
-])
+def serve_layout():
+    return html.Div([
+        location,
+        navbar,
+        body
+    ])
+
+app.layout = serve_layout
 
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/usa_land':
-        return usa_land.layout
+        return usa_land.page_layout
     elif pathname == '/international':
-        return international.layout
+        return international.page_layout
     else:
-        return north_america.layout
+        return north_america.page_layout
 
 
 if __name__ == '__main__':
