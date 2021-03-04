@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4cebaca1-62cd-4a3e-96dd-9cbf0b896df9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/international.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/international.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/north_america.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/north_america.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/usa_land.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/usa_land.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/index.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,14 +48,14 @@
       <screen x="33" y="23" width="1247" height="777" />
     </state>
     <state x="512" y="312" key="Github.ShareDialog/33.23.1247.777@33.23.1247.777" timestamp="1607292503842" />
-    <state x="257" y="151" key="Vcs.Push.Dialog.v2" timestamp="1613885634341">
-      <screen x="36" y="23" width="1244" height="777" />
+    <state x="258" y="151" key="Vcs.Push.Dialog.v2" timestamp="1613962939088">
+      <screen x="37" y="23" width="1243" height="777" />
     </state>
     <state x="260" y="151" key="Vcs.Push.Dialog.v2/1280.23.1920.1057/39.23.1241.777@39.23.1241.777" timestamp="1609124553697" />
     <state x="255" y="151" key="Vcs.Push.Dialog.v2/33.23.1247.777@33.23.1247.777" timestamp="1607293075772" />
     <state x="256" y="151" key="Vcs.Push.Dialog.v2/34.23.1246.777@34.23.1246.777" timestamp="1607918332470" />
     <state x="257" y="151" key="Vcs.Push.Dialog.v2/36.23.1244.777@36.23.1244.777" timestamp="1613885634341" />
-    <state x="258" y="151" key="Vcs.Push.Dialog.v2/37.23.1243.777@37.23.1243.777" timestamp="1609906596228" />
+    <state x="258" y="151" key="Vcs.Push.Dialog.v2/37.23.1243.777@37.23.1243.777" timestamp="1613962939088" />
     <state x="259" y="151" key="Vcs.Push.Dialog.v2/38.23.1242.777@38.23.1242.777" timestamp="1613149163395" />
     <state x="260" y="151" key="Vcs.Push.Dialog.v2/39.23.1241.777@39.23.1241.777" timestamp="1609733867202" />
   </component>

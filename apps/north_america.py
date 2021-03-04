@@ -36,7 +36,7 @@ page_layout = html.Div([
                 multi=False,
                 value=functions.get_date_list()[0],
                 placeholder='Select a date',
-                persistence=True
+                persistence=False
             ),
             dcc.Dropdown(
                 id='na-reference-dropdown',
@@ -78,7 +78,7 @@ page_layout = html.Div([
                         id='na-country-checklist',
                         options=[{'label': x, 'value': x} for x in functions.get_country_list()],
                         value=functions.get_country_list(),
-                        persistence=True
+                        persistence=False
                     )
                 ])
             ]),
@@ -107,7 +107,7 @@ page_layout = html.Div([
                         id='na-state-checklist',
                         options=[{'label': x, 'value': x} for x in functions.get_state_list()],
                         value=functions.get_state_list(),
-                        persistence=True
+                        persistence=False
                     )
                 ])
             ]),
@@ -128,7 +128,7 @@ page_layout = html.Div([
                         id='na-basin-checklist',
                         options=[{'label': x, 'value': x} for x in functions.get_basin_list()],
                         value=functions.get_basin_list(),
-                        persistence=True
+                        persistence=False
                     )
                 ])
             ]),
@@ -149,7 +149,7 @@ page_layout = html.Div([
                         id='na-drill-for-checklist',
                         options=[{'label': x, 'value': x} for x in functions.get_drill_for_list()],
                         value=functions.get_drill_for_list(),
-                        persistence=True
+                        persistence=False
                     )
                 ])
             ]),
@@ -170,7 +170,7 @@ page_layout = html.Div([
                         id='na-location-checklist',
                         options=[{'label': x, 'value': x} for x in functions.get_location_list()],
                         value=functions.get_location_list(),
-                        persistence=True
+                        persistence=False
                     )
                 ])
             ]),
@@ -191,7 +191,7 @@ page_layout = html.Div([
                         id='na-trajectory-checklist',
                         options=[{'label': x, 'value': x} for x in functions.get_trajectory_list()],
                         value=functions.get_trajectory_list(),
-                        persistence=True
+                        persistence=False
                     )
                 ])
             ]),
@@ -212,7 +212,7 @@ page_layout = html.Div([
                         id='na-well-depth-checklist',
                         options=[{'label': x, 'value': x} for x in functions.get_well_depth_list()],
                         value=functions.get_well_depth_list(),
-                        persistence=True
+                        persistence=False
                     )
                 ])
             ])
